@@ -1,4 +1,4 @@
--- my_robot_2d.lua  from revo_lds.lua
+-- cartographer_mapping.lua  from revo_lds.lua
 include "map_builder.lua"
 include "trajectory_builder.lua"
 
@@ -17,7 +17,7 @@ options = {
   provide_odom_frame = false,
   publish_frame_projected_to_2d = true,
   --use_pose_extrapolator = true,
-  use_odometry = true,
+  use_odometry = true, --是否使用odom数据，使用odom数据时需要看在打滑情况下odom数据是否可信
   use_nav_sat = false,
   use_landmarks = false,
   --订阅的lidar scan数量
@@ -53,6 +53,9 @@ TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = true
 TRAJECTORY_BUILDER_2D.motion_filter.max_distance_meters = 0.05
 TRAJECTORY_BUILDER_2D.motion_filter.max_angle_radians = math.rad(0.1)
 TRAJECTORY_BUILDER_2D.motion_filter.max_time_seconds = 0.2
+
+--TRAJECTORY_BUILDER_2D.real_time_correlative_scan_matcher.linear_search_window = 0.1
+
 --FastCorrelativeScanMatcher初步匹配的结果分数，高于此分数才进入下一步的Ceres Scan Matcher处理。
 POSE_GRAPH.constraint_builder.min_score = 0.65
 --全局定位最小分数，低于此分数则认为目前全局定位不准确
