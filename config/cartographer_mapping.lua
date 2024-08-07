@@ -43,7 +43,7 @@ TRAJECTORY_BUILDER_2D.max_range = 30
 -- 无效激光数据设置距离为该数值
 TRAJECTORY_BUILDER_2D.missing_data_ray_length = 3.
 -- false,不使用IMU数据
-TRAJECTORY_BUILDER_2D.use_imu_data = false
+TRAJECTORY_BUILDER_2D.use_imu_data = true
 -- true,使用实时回环检测来进行前端的扫描匹配
 -- false, 关闭该功能后，原地打滑旋转会造成严重的方向角的错误，建图失败，即没有使用lidar scan数据进行方向角判断
 TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = false 
@@ -60,6 +60,7 @@ POSE_GRAPH.constraint_builder.min_score = 0.65
 POSE_GRAPH.constraint_builder.global_localization_min_score = 0.7
 
 -- 关闭后端优化
+-- 由于后端优化会用到odometry数据，如果不关闭后端优化，在原地长时间快速旋转时，会导致建图重影或失败
 POSE_GRAPH.optimize_every_n_nodes = 0
 POSE_GRAPH.constraint_builder.sampling_ratio = 0
 POSE_GRAPH.global_sampling_ratio = 0
