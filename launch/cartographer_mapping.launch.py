@@ -83,6 +83,14 @@ def generate_launch_description():
             {'resolution': 0.05},
             {'-publish_period_sec': 1.0}],
         )
+    
+    cartographer_odom_preproc_node = Node(
+        package = 'cartographer_ros',
+        executable = 'cartographer_odom_preproc',
+        name='cartographer_odom_preproc',
+        parameters = [
+            {'use_sim_time': True}],
+        )
 
     # rviz_node = Node(
     #     package = 'rviz2',
@@ -104,6 +112,7 @@ def generate_launch_description():
         # robot_state_publisher_node,
         cartographer_node,
         cartographer_occupancy_grid_node,
+        cartographer_odom_preproc_node,
         # rviz_node,
         # ros2_bag_play_cmd
     ])

@@ -45,8 +45,9 @@ TRAJECTORY_BUILDER_2D.missing_data_ray_length = 3.
 -- false,不使用IMU数据
 TRAJECTORY_BUILDER_2D.use_imu_data = true
 -- true,使用实时回环检测来进行前端的扫描匹配
--- false, 关闭该功能后，原地打滑旋转会造成严重的方向角的错误，建图失败，即没有使用lidar scan数据进行方向角判断
-TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = false 
+-- false, 关闭该功能后，如果use_imu_data=false， 原地打滑旋转会造成严重的方向角的错误，建图失败，即没有使用lidar scan数据进行方向角判断
+-- 理论上该功能也能够优化位移打滑的情况（todo）
+TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = true 
 --尽量小点；如果移动距离或旋转过小, 或者时间过短, 不进行地图的更新
 TRAJECTORY_BUILDER_2D.motion_filter.max_distance_meters = 0.05
 TRAJECTORY_BUILDER_2D.motion_filter.max_angle_radians = math.rad(0.1)
@@ -59,10 +60,10 @@ POSE_GRAPH.constraint_builder.min_score = 0.65
 --全局定位最小分数，低于此分数则认为目前全局定位不准确
 POSE_GRAPH.constraint_builder.global_localization_min_score = 0.7
 
--- 关闭后端优化
+-- 关闭后端优化 注释之后打开后端优化
 -- 由于后端优化会用到odometry数据，如果不关闭后端优化，在原地长时间快速旋转时，会导致建图重影或失败
-POSE_GRAPH.optimize_every_n_nodes = 0
-POSE_GRAPH.constraint_builder.sampling_ratio = 0
-POSE_GRAPH.global_sampling_ratio = 0
+-- POSE_GRAPH.optimize_every_n_nodes = 0
+-- POSE_GRAPH.constraint_builder.sampling_ratio = 0
+-- POSE_GRAPH.global_sampling_ratio = 0
 
 return options 
