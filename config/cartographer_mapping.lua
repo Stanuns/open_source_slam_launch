@@ -45,7 +45,8 @@ TRAJECTORY_BUILDER_2D.missing_data_ray_length = 3.
 -- false,不使用IMU数据
 TRAJECTORY_BUILDER_2D.use_imu_data = true
 -- true,使用实时回环检测来进行前端的扫描匹配
--- false, 关闭该功能后，如果use_imu_data=false， 原地打滑旋转会造成严重的方向角的错误，建图失败，即没有使用lidar scan数据进行方向角判断
+-- false, 关闭该功能后，如果use_imu_data=false， 原地轻微打滑或者不打滑旋转速度过快时间过长也会造成建图重影，长时间原地打滑旋转会造成严重的方向角的错误，建图失败，即没有使用lidar scan数据进行方向角判断
+-- true, 打开该功能，如果use_imu_data=false， 轻微打滑可以纠正，原地打滑旋转长时间也会建图重影导致失败。
 -- 理论上该功能也能够优化位移打滑的情况（todo）
 TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = true 
 --尽量小点；如果移动距离或旋转过小, 或者时间过短, 不进行地图的更新
