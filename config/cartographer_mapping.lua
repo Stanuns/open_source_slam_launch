@@ -62,10 +62,10 @@ POSE_GRAPH.constraint_builder.min_score = 0.65
 POSE_GRAPH.constraint_builder.global_localization_min_score = 0.7
 
 --体素滤波参数
-TRAJECTORY_BUILDER_2D.voxel_filter_size = 0.02
+TRAJECTORY_BUILDER_2D.voxel_filter_size = 0.025
 --ceres地图的扫描，平移，旋转的权重，影响建图效果，其他基本上是影响计算量等
-TRAJECTORY_BUILDER_2D.ceres_scan_matcher.occupied_space_weight = 5. --扫描匹配点云和地图匹配程度，值越大，点云和地图匹配置信度越高, 将此项从1->10之后，关闭后端优化后，垂直撞墙之后，地图不重影。下面两个参数同理。
-TRAJECTORY_BUILDER_2D.ceres_scan_matcher.translation_weight = 5.  --残差平移，值越大，越不相信和地图匹配的效果，而是越相信先验位姿的结果. 越小越相信ceres_scan_matcher(与map的匹配)
+TRAJECTORY_BUILDER_2D.ceres_scan_matcher.occupied_space_weight = 1. --扫描匹配点云和地图匹配程度，值越大，点云和地图匹配置信度越高, 将此项从1->10之后，关闭后端优化后，垂直撞墙之后，地图不重影。下面两个参数同理。
+TRAJECTORY_BUILDER_2D.ceres_scan_matcher.translation_weight = 10.  --残差平移，值越大，越不相信和地图匹配的效果，而是越相信先验位姿的结果. 越小越相信ceres_scan_matcher(与map的匹配)
 TRAJECTORY_BUILDER_2D.ceres_scan_matcher.rotation_weight = 40. --旋转分量，值越大，越不相信和地图匹配的效果，而是越相信先验位姿的结果. 如果imu不好，接入后地图旋转厉害，可以将这里的旋转权重减小,越相信ceres_scan_matcher(与map的匹配)
 
 
@@ -82,7 +82,7 @@ POSE_GRAPH.constraint_builder.sampling_ratio = 0.3
 POSE_GRAPH.constraint_builder.max_constraint_distance = 15.
 
 --回环检测阈值，如果不稳定有错误匹配，可以提高这两个值，场景重复可以降低或者关闭回环
-POSE_GRAPH.constraint_builder.min_score = 0.48
+POSE_GRAPH.constraint_builder.min_score = 0.55
 POSE_GRAPH.constraint_builder.global_localization_min_score = 0.60
 
 return options 

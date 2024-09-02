@@ -35,5 +35,5 @@ ros2 run nav2_map_server map_saver_cli -f my_map_name
 [refer 2](https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel/turtlebot3_navigation2)
 - 1.6 launch navigation
 ```bashrc
-ros2 launch open_source_slam_launch nav2.launch.py use_sim_time:=True map:=../../open_source_slam_launch/maps/cartographermap2.yaml
+ros2 launch open_source_slam_launch nav2.launch.py use_sim_time:=True map:=path_to/open_source_slam_launch/maps/cartographermap2.yaml
 ```
