@@ -29,22 +29,6 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
-    # map_dir = LaunchConfiguration(
-    #     'map',
-    #     default=os.path.join(
-    #         get_package_share_directory('open_source_slam_launch'),
-    #         'maps',
-    #         'cartographermap2.yaml'))
-
-    # param_file_name = TURTLEBOT3_MODEL + '.yaml'
-    # param_dir = LaunchConfiguration(
-    #     'params_file',
-    #     default=os.path.join(
-    #         get_package_share_directory('turtlebot3_navigation2'),
-    #         'param',
-    #         param_file_name))
-
-    nav2_launch_file_dir = os.path.join(get_package_share_directory('open_source_slam_launch'), 'launch')
 
     rviz_config_dir = os.path.join(
         get_package_share_directory('nav2_bringup'),
@@ -54,36 +38,18 @@ def generate_launch_description():
     # remappings = [('odom', 'odom_combined')]
 
     return LaunchDescription([
-        # DeclareLaunchArgument(
-        #     'map',
-        #     default_value=map_dir,
-        #     description='Full path to map file to load'),
-
-        # DeclareLaunchArgument(
-        #     'params_file',
-        #     default_value=param_dir,
-        #     description='Full path to param file to load'),
 
         DeclareLaunchArgument(
             'use_sim_time',
             default_value='false',
             description='Use simulation (Gazebo) clock if true'),
 
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([nav2_launch_file_dir, '/wheeltec_bringup_launch_auto_explore_mapping.py']),
-            launch_arguments={
-                # 'map': map_dir,
-                'use_sim_time': use_sim_time
-                # 'params_file': param_dir
-                }.items(),
-        ),
-
-        # Node(
-        #     package='rviz2',
-        #     executable='rviz2',
-        #     name='rviz2',
-        #     arguments=['-d', rviz_config_dir],
-        #     parameters=[{'use_sim_time': use_sim_time}],
-        #     # remappings=remappings,
-        #     output='screen'),
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d', rviz_config_dir],
+            parameters=[{'use_sim_time': use_sim_time}],
+            # remappings=remappings,
+            output='screen'),
     ])
