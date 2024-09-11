@@ -28,6 +28,8 @@ setup(
             glob(os.path.join('maps', '*.pgm'))),
         (os.path.join('share', package_name, 'params'),
             glob(os.path.join('params', '*.yaml'))),
+        (os.path.join('share', package_name, 'rviz'),
+            glob(os.path.join('rviz', '*.rviz'))),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
