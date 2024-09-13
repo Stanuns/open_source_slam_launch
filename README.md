@@ -37,3 +37,8 @@ ros2 run nav2_map_server map_saver_cli -f my_map_name
 ```bashrc
 ros2 launch open_source_slam_launch nav2.launch.py use_sim_time:=True map:=path_to/open_source_slam_launch/maps/cartographermap2.yaml
 ```
+
+### issue1: if local_costmap/costmap of rviz cannot show, you need check the use_sim_time.
+```bashrc
+ros2 launch open_source_slam_launch nav2.launch.py use_sim_time:=True
+```
