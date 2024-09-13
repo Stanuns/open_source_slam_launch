@@ -36,9 +36,9 @@ def generate_launch_description():
         default=os.path.join(
             get_package_share_directory('open_source_slam_launch'),
             'maps',
-            'cartographermap2.yaml'))
+            'WHEELTEC.yaml'))
 
-    param_file_name = 'nav2_gazebo_diff_robot.yaml'
+    param_file_name = 'nav2_wheeltec_mini_diff_robot.yaml'
     param_dir = LaunchConfiguration(
         'params_file',
         default=os.path.join(
