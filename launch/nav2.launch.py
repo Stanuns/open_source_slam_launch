@@ -14,7 +14,7 @@
 #
 # Author: Darby Lim
 
-# Wei Sun source from navigation2.launch.py
+# Wei Sun source from turtlebot3_navigation2: navigation2.launch.py
 
 import os
 
@@ -38,13 +38,13 @@ def generate_launch_description():
             'maps',
             'cartographermap2.yaml'))
 
-    # param_file_name = TURTLEBOT3_MODEL + '.yaml'
-    # param_dir = LaunchConfiguration(
-    #     'params_file',
-    #     default=os.path.join(
-    #         get_package_share_directory('turtlebot3_navigation2'),
-    #         'param',
-    #         param_file_name))
+    param_file_name = 'nav2_gazebo_diff_robot.yaml'
+    param_dir = LaunchConfiguration(
+        'params_file',
+        default=os.path.join(
+            get_package_share_directory('open_source_slam_launch'),
+            'params',
+            param_file_name))
 
     nav2_launch_file_dir = os.path.join(get_package_share_directory('nav2_bringup'), 'launch')
 
@@ -59,10 +59,10 @@ def generate_launch_description():
             default_value=map_dir,
             description='Full path to map file to load'),
 
-        # DeclareLaunchArgument(
-        #     'params_file',
-        #     default_value=param_dir,
-        #     description='Full path to param file to load'),
+        DeclareLaunchArgument(
+            'params_file',
+            default_value=param_dir,
+            description='Full path to param file to load'),
 
         DeclareLaunchArgument(
             'use_sim_time',
@@ -73,9 +73,8 @@ def generate_launch_description():
             PythonLaunchDescriptionSource([nav2_launch_file_dir, '/bringup_launch.py']),
             launch_arguments={
                 'map': map_dir,
-                'use_sim_time': use_sim_time
-                # 'params_file': param_dir
-                }.items(),
+                'use_sim_time': use_sim_time,
+                'params_file': param_dir}.items(),
         ),
 
         Node(
@@ -85,4 +84,12 @@ def generate_launch_description():
             arguments=['-d', rviz_config_dir],
             parameters=[{'use_sim_time': use_sim_time}],
             output='screen'),
+
+        Node(
+            package = 'cartographer_ros',
+            executable = 'cartographer_odom_preproc',
+            name='cartographer_odom_preproc',
+            parameters = [
+                {'use_sim_time': True}],
+        )
     ])
