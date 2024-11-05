@@ -16,7 +16,7 @@ setup(
             glob(os.path.join('launch', '*launch.[pxy][yma]*'))),
         (os.path.join('share', package_name, 'launch'),
             glob(os.path.join('launch', '*.launch.py'))),
-            (os.path.join('share', package_name, 'launch'),
+        (os.path.join('share', package_name, 'launch'),
             glob(os.path.join('launch', '*.py'))),
         (os.path.join('share', package_name, 'config'),
             glob(os.path.join('config', '*.yaml'))),
