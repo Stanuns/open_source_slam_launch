@@ -77,12 +77,12 @@ def generate_launch_description():
                 'params_file': param_dir}.items(),
         ),
 
-         Node(
-            package = 'cartographer_ros',
-            executable = 'cartographer_odom_preproc',
-            name='cartographer_odom_preproc',
-            parameters = [
-                {'use_sim_time': True}]),
+        Node(
+        package = 'cartographer_ros',
+        executable = 'cartographer_odom_preproc',
+        name='cartographer_odom_preproc',
+        parameters = [
+            {'use_sim_time': True}]),
 
         Node(
             package='rviz2',
