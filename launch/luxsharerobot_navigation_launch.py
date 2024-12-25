@@ -55,7 +55,9 @@ def generate_launch_description():
     # TODO(orduno) Substitute with `PushNodeRemapping`
     #              https://github.com/ros2/launch_ros/issues/56
     remappings = [('/tf', 'tf'),
-                  ('/tf_static', 'tf_static')]
+                  ('/tf_static', 'tf_static'),
+                  ('odom', 'odom_org'),
+                  ('cmd_vel_nav','cmd_vel')]
 
     # Create our own temporary YAML files that include substitutions
     param_substitutions = {
@@ -119,7 +121,9 @@ def generate_launch_description():
                 respawn_delay=2.0,
                 parameters=[configured_params],
                 arguments=['--ros-args', '--log-level', log_level],
-                remappings=remappings + [('cmd_vel', 'cmd_vel_nav')]),
+                remappings=remappings
+                # remappings=remappings + [('cmd_vel', 'cmd_vel_nav')]
+                ),
             Node(
                 package='nav2_smoother',
                 executable='smoother_server',
@@ -179,8 +183,10 @@ def generate_launch_description():
                 respawn_delay=2.0,
                 parameters=[configured_params],
                 arguments=['--ros-args', '--log-level', log_level],
-                remappings=remappings +
-                        [('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')]),
+                remappings=remappings
+                # remappings=remappings +
+                #         [('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')]
+                 ),
             Node(
                 package='nav2_lifecycle_manager',
                 executable='lifecycle_manager',
@@ -202,7 +208,9 @@ def generate_launch_description():
                 plugin='nav2_controller::ControllerServer',
                 name='controller_server',
                 parameters=[configured_params],
-                remappings=remappings + [('cmd_vel', 'cmd_vel_nav')]),
+                remappings=remappings
+                # remappings=remappings + [('cmd_vel', 'cmd_vel_nav')]
+                ),
             ComposableNode(
                 package='nav2_smoother',
                 plugin='nav2_smoother::SmootherServer',
@@ -238,8 +246,10 @@ def generate_launch_description():
                 plugin='nav2_velocity_smoother::VelocitySmoother',
                 name='velocity_smoother',
                 parameters=[configured_params],
-                remappings=remappings +
-                           [('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')]),
+                remappings=remappings
+                # remappings=remappings +
+                #            [('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')]
+                ),
             ComposableNode(
                 package='nav2_lifecycle_manager',
                 plugin='nav2_lifecycle_manager::LifecycleManager',
