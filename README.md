@@ -1,4 +1,4 @@
-# install ros2 mapping package and use Navigation2
+# ***install ros2 mapping package and use Navigation2***
 
 ## install cartographer and test
 
@@ -56,12 +56,15 @@ ros2 launch open_source_slam_launch nav2.launch.py use_sim_time:=True
 
 #### issue2: Now, you should just see the map on the screen, but no robot. You’ll also see some kinds of error logs in the terminal. This is because Nav2 doesn’t know where your robot is, and you need to **provide the first 2D pose estimate**.
 
-
-# wheeltec Mini Diff Robot
+# ***wheeltec Mini Diff Robot***
 
 ## Launch Cartographer on WheelTec Mini Diff Robot
+
 ```bashrc
+ros2 launch turn_on_wheeltec_robot turn_on_wheeltec_robot.launch.py
+ros2 launch turn_on_wheeltec_robot wheeltec_lidar.launch.py
 ros2 launch open_source_slam_launch wheeltec_cartographer_mapping.launch.py
+ros2 launch nav2_map_server map_saver_server.launch.py
 ```
 
 ## Launch Navigation2 on WheelTec Mini Diff Robot

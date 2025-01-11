@@ -34,9 +34,9 @@ def generate_launch_description():
     map_dir = LaunchConfiguration(
         'map',
         default=os.path.join(
-            get_package_share_directory('open_source_slam_launch'),
+            get_package_share_directory('map_server_extension'),
             'maps',
-            'WHEELTEC.yaml'))
+            'AutoExploreMap_11522.yaml'))
 
     param_file_name = 'nav2_wheeltec_mini_diff_robot.yaml'
     param_dir = LaunchConfiguration(
@@ -80,12 +80,12 @@ def generate_launch_description():
 
 
         #Debug
-        Node(
-        package = 'cartographer_ros',
-        executable = 'cartographer_odom_preproc',
-        name='cartographer_odom_preproc',
-        parameters = [
-            {'use_sim_time': True}]),
+        # Node(
+        # package = 'cartographer_ros',
+        # executable = 'cartographer_odom_preproc',
+        # name='cartographer_odom_preproc',
+        # parameters = [
+        #     {'use_sim_time': True}]),
 
         # Node(
         #     package='rviz2',
