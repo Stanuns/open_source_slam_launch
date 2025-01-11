@@ -109,19 +109,19 @@ def generate_launch_description():
     #     name = 'rosbag_play',
     # )
 
-    wheeltec_bringup_dir = get_package_share_directory('turn_on_wheeltec_robot')
-    wheeltec_launch_dir = os.path.join(wheeltec_bringup_dir, 'launch')
-    wheeltec_robot = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(wheeltec_launch_dir, 'turn_on_wheeltec_robot.launch.py')),
-            launch_arguments={'carto_slam': 'true'}.items(),
-    )
-    wheeltec_lidar = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(wheeltec_launch_dir, 'wheeltec_lidar.launch.py')),
-    )
+    # wheeltec_bringup_dir = get_package_share_directory('turn_on_wheeltec_robot')
+    # wheeltec_launch_dir = os.path.join(wheeltec_bringup_dir, 'launch')
+    # wheeltec_robot = IncludeLaunchDescription(
+    #         PythonLaunchDescriptionSource(os.path.join(wheeltec_launch_dir, 'turn_on_wheeltec_robot.launch.py')),
+    #         launch_arguments={'carto_slam': 'true'}.items(),
+    # )
+    # wheeltec_lidar = IncludeLaunchDescription(
+    #         PythonLaunchDescriptionSource(os.path.join(wheeltec_launch_dir, 'wheeltec_lidar.launch.py')),
+    # )
 
     return LaunchDescription([
-        wheeltec_robot,
-        wheeltec_lidar,
+        # wheeltec_robot,
+        # wheeltec_lidar,
 
         # Launch arguments
         # bag_filename_arg,
