@@ -72,7 +72,7 @@ def generate_launch_description():
                        '-configuration_basename', configuration_basename],
         remappings = [
             ('/odom', '/odom_combined'),
-            ('/imu','/imu/data'),
+            ('/imu','/imu/data')
             # ('/scan_1','/scan'),
             # ('/scan_2','/camera/depth/scan')
             ],

@@ -19,7 +19,7 @@ options = {
   use_landmarks = false,
 
   --num_laser_scans = 2,  --订阅的lidar scan数量
-  num_laser_scans = 1
+  num_laser_scans = 1,
   num_multi_echo_laser_scans = 0,
 
   num_subdivisions_per_laser_scan = 1,  --扫描分割数量，为1不分割
