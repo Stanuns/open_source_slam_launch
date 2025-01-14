@@ -77,6 +77,13 @@ ros2 launch turn_on_wheeltec_robot wheeltec_lidar.launch.py
 ros2 launch open_source_slam_launch wheeltec_nav2.launch.py
 ```
 
+Attention：
+
+- If cannot show map in rviz2:
+  *Set rviz2 with configuration,   
+  Map->Topic->Reliability Policy: Reliable
+  Durability policy: Transient Local*
+
 ### 2.launch Rviz
 
 ```bashrc
