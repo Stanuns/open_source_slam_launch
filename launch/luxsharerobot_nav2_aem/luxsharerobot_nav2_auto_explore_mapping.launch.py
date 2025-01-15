@@ -36,7 +36,7 @@ def generate_launch_description():
     #         'maps',
     #         'cartographermap2.yaml'))
 
-    param_file_name = 'nav2_luxsharerobot_auto_explore_mapping_mini_diff_robot.yaml'
+    param_file_name = 'nav2_auto_explore_mapping_luxsharerobot.yaml'
     param_dir = LaunchConfiguration(
         'params_file',
         default=os.path.join(
