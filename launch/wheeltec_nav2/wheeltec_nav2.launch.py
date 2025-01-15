@@ -38,7 +38,7 @@ def generate_launch_description():
             'maps',
             'AutoExploreMap_11522.yaml'))
 
-    param_file_name = 'nav2_wheeltec_mini_diff_robot.yaml'
+    param_file_name = 'nav2_params_wheeltec.yaml'
     param_dir = LaunchConfiguration(
         'params_file',
         default=os.path.join(
