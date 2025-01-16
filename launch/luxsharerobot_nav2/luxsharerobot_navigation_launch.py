@@ -56,7 +56,7 @@ def generate_launch_description():
     #              https://github.com/ros2/launch_ros/issues/56
     remappings = [('/tf', 'tf'),
                   ('/tf_static', 'tf_static'),
-                  ('odom', 'odom_org'),
+                  ('odom', 'odom_combined'),
                   ('cmd_vel_nav','cmd_vel')]
 
     # Create our own temporary YAML files that include substitutions

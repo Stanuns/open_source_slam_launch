@@ -80,7 +80,7 @@ ros2 launch open_source_slam_launch wheeltec_nav2.launch.py
 Attention：
 
 - If cannot show map in rviz2:
-  *Set rviz2 with configuration,   
+  *Set rviz2 with configuration,
   Map->Topic->Reliability Policy: Reliable
   Durability policy: Transient Local*
 
@@ -88,4 +88,43 @@ Attention：
 
 ```bashrc
 ros2 launch open_source_slam_launch nav2_rviz.launch.py
+```
+
+# ***Luxshare Robot***
+## Luxshare Robot cartographer
+
+### Launch base
+
+```
+ros2 launch luxshare_robot luxshare_robot.launch.py
+```
+*Attention*:
+- 做cartographer时，启动base不需要tf：odom->base_footprint,
+
+
+### Launch Cartographer on Luxshare Robot
+
+```bashrc
+ros2 launch open_source_slam_launch luxsharerobot_cartographer_mapping.launch.py
+ros2 launch nav2_map_server map_saver_server.launch.py
+```
+
+### Save map
+
+```
+ros2 run map_server_extension map_saver_client 
+```
+## Luxshare Robot navigation2
+### Launch base
+```
+ros2 launch luxshare_robot luxshare_robot.launch.py
+```
+*Attention*:
+- 在单独做nav2时，需要tf：odom->base_footprint,
+- 在该机器人中是方法是打开ekf，得到tf：odom->base_footprint，但是测试发现luxshare robot的imu数据有问题，截止20250116，得到/odom_combined数据是和/odom_org一样
+
+### Launch Navigation2 on Luxshare Robot
+
+```
+ros2 launch open_source_slam_launch luxsharerobot_nav2.launch.py
 ```
