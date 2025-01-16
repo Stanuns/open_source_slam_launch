@@ -34,16 +34,16 @@ def generate_launch_description():
     map_dir = LaunchConfiguration(
         'map',
         default=os.path.join(
-            get_package_share_directory('open_source_slam_launch'),
+            get_package_share_directory('map_server_extension'),
             'maps',
             'map_1224.yaml'))
 
-    param_file_name = 'nav2_luxsharerobot_mini_diff_robot.yaml'
+    param_file_name = 'nav2_params_luxsharerobot.yaml'
     param_dir = LaunchConfiguration(
         'params_file',
         default=os.path.join(
             get_package_share_directory('open_source_slam_launch'),
-            'params',
+            'launch',
             param_file_name))
 
     nav2_launch_file_dir = os.path.join(get_package_share_directory('open_source_slam_launch'), 'launch')
