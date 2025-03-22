@@ -64,7 +64,7 @@ POSE_GRAPH.constraint_builder.global_localization_min_score = 0.7
 --体素滤波参数
 TRAJECTORY_BUILDER_2D.voxel_filter_size = 0.025
 --ceres地图的扫描，平移，旋转的权重，影响建图效果，其他基本上是影响计算量等
-TRAJECTORY_BUILDER_2D.ceres_scan_matcher.occupied_space_weight = 1. --扫描匹配点云和地图匹配程度，值越大，点云和地图匹配置信度越高, 将此项从1->10之后，关闭后端优化后，垂直撞墙之后，地图不重影。下面两个参数同理。
+TRAJECTORY_BUILDER_2D.ceres_scan_matcher.occupied_space_weight = 10. --扫描匹配点云和地图匹配程度，值越大，点云和地图匹配置信度越高, 将此项从1->10之后，关闭后端优化后，垂直撞墙之后，地图不重影。下面两个参数同理。
 TRAJECTORY_BUILDER_2D.ceres_scan_matcher.translation_weight = 10.  --残差平移，值越大，越不相信和地图匹配的效果，而是越相信先验位姿的结果. 越小越相信ceres_scan_matcher(与map的匹配)
 TRAJECTORY_BUILDER_2D.ceres_scan_matcher.rotation_weight = 40. --旋转分量，值越大，越不相信和地图匹配的效果，而是越相信先验位姿的结果. 如果imu不好，接入后地图旋转厉害，可以将这里的旋转权重减小,越相信ceres_scan_matcher(与map的匹配)
 
@@ -72,14 +72,14 @@ TRAJECTORY_BUILDER_2D.ceres_scan_matcher.rotation_weight = 40. --旋转分量，
 --后端优化1
 -- 关闭后端优化 注释之后打开后端优化
 -- 由于后端优化会用到odometry数据，如果不关闭后端优化，在原地长时间快速旋转时，会导致建图重影或失败
--- POSE_GRAPH.optimize_every_n_nodes = 0
--- POSE_GRAPH.constraint_builder.sampling_ratio = 0
--- POSE_GRAPH.global_sampling_ratio = 0
+POSE_GRAPH.optimize_every_n_nodes = 0
+POSE_GRAPH.constraint_builder.sampling_ratio = 0
+POSE_GRAPH.global_sampling_ratio = 0
 --后端优化2 调整参数
-TRAJECTORY_BUILDER_2D.submaps.num_range_data = 90.
-POSE_GRAPH.optimize_every_n_nodes = 90*2+20 --一个子图插入多少个节点  2*num_range_data以上
-POSE_GRAPH.constraint_builder.sampling_ratio = 0.3
-POSE_GRAPH.constraint_builder.max_constraint_distance = 15.
+-- TRAJECTORY_BUILDER_2D.submaps.num_range_data = 90.
+-- POSE_GRAPH.optimize_every_n_nodes = 90*2+20 --一个子图插入多少个节点  2*num_range_data以上
+-- POSE_GRAPH.constraint_builder.sampling_ratio = 0.3
+-- POSE_GRAPH.constraint_builder.max_constraint_distance = 15.
 
 --回环检测阈值，如果不稳定有错误匹配，可以提高这两个值，场景重复可以降低或者关闭回环
 POSE_GRAPH.constraint_builder.min_score = 0.55
