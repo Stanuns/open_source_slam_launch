@@ -6,7 +6,7 @@ options = {
   map_builder = MAP_BUILDER,
   trajectory_builder = TRAJECTORY_BUILDER,
   map_frame = "map",    --地图坐标系名字 
-  tracking_frame = "imu_link",  -- 将所有传感器数据转换到这个坐标系下，如果有imu的，就写imu_link，如果没有，就写base_link或者base_footprint. 
+  tracking_frame = "base_footprint",  -- 将所有传感器数据转换到这个坐标系下，如果有imu的，就写imu_link，如果没有，就写base_link或者base_footprint. 
                                 -- cartographer会将所有传感器进行坐标变换到tracking_frame坐标系下，每个传感器的频率不一样，imu频率远高于laser的频率，这样做可以减少计算
   published_frame = "base_footprint",  --cartographer发布发布map到published_frame之间的tf;
   odom_frame = "odom", --里程计坐标系名字
@@ -43,7 +43,7 @@ TRAJECTORY_BUILDER_2D.max_range = 30
 -- 无效激光数据设置距离为该数值
 TRAJECTORY_BUILDER_2D.missing_data_ray_length = 3.
 -- false,不使用IMU数据
-TRAJECTORY_BUILDER_2D.use_imu_data = true
+TRAJECTORY_BUILDER_2D.use_imu_data = false
 -- true,使用实时回环检测来进行前端的扫描匹配
 -- false, 关闭该功能后，如果use_imu_data=false， 原地轻微打滑或者不打滑旋转速度过快时间过长也会造成建图重影，长时间原地打滑旋转会造成严重的方向角的错误，建图失败，即没有使用lidar scan数据进行方向角判断
 -- true, 打开该功能，如果use_imu_data=false， 轻微打滑可以纠正，原地打滑旋转长时间也会建图重影导致失败。
