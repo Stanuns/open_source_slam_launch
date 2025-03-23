@@ -36,7 +36,7 @@ def generate_launch_description():
         default=os.path.join(
             get_package_share_directory('map_server_extension'),
             'maps',
-            'map_142114.yaml'))
+            'kunshan_map0322_03.yaml')) #AutoExploreMap_16167.yaml
 
     param_file_name = 'nav2_params_luxsharerobot.yaml'
     param_dir = LaunchConfiguration(
