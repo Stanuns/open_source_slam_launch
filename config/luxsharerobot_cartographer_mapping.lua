@@ -63,10 +63,10 @@ POSE_GRAPH.constraint_builder.global_localization_min_score = 0.7
 
 --体素滤波参数
 TRAJECTORY_BUILDER_2D.voxel_filter_size = 0.025
---ceres地图的扫描，平移，旋转的权重，影响建图效果，其他基本上是影响计算量等
-TRAJECTORY_BUILDER_2D.ceres_scan_matcher.occupied_space_weight = 10. --扫描匹配点云和地图匹配程度，值越大，点云和地图匹配置信度越高, 将此项从1->10之后，关闭后端优化后，垂直撞墙之后，地图不重影。下面两个参数同理。
+--ceres地图的扫描，平移，旋转的权重，影响建图效果，其他基本上是影响计算量等， 提高 ceres_scan_matcher 的权重，减少对里程计的依赖
+TRAJECTORY_BUILDER_2D.ceres_scan_matcher.occupied_space_weight = 20. --扫描匹配点云和地图匹配程度，值越大，点云和地图匹配置信度越高, 将此项从1->10之后，关闭后端优化后，垂直撞墙之后，地图不重影。下面两个参数同理。
 TRAJECTORY_BUILDER_2D.ceres_scan_matcher.translation_weight = 10.  --残差平移，值越大，越不相信和地图匹配的效果，而是越相信先验位姿的结果. 越小越相信ceres_scan_matcher(与map的匹配)
-TRAJECTORY_BUILDER_2D.ceres_scan_matcher.rotation_weight = 40. --旋转分量，值越大，越不相信和地图匹配的效果，而是越相信先验位姿的结果. 如果imu不好，接入后地图旋转厉害，可以将这里的旋转权重减小,越相信ceres_scan_matcher(与map的匹配)
+TRAJECTORY_BUILDER_2D.ceres_scan_matcher.rotation_weight = 1. --旋转分量，值越大，越不相信和地图匹配的效果，而是越相信先验位姿的结果. 如果imu不好，接入后地图旋转厉害，可以将这里的旋转权重减小,越相信ceres_scan_matcher(与map的匹配)
 
 
 --后端优化1
@@ -76,13 +76,14 @@ POSE_GRAPH.optimize_every_n_nodes = 0
 POSE_GRAPH.constraint_builder.sampling_ratio = 0
 POSE_GRAPH.global_sampling_ratio = 0
 --后端优化2 调整参数
--- TRAJECTORY_BUILDER_2D.submaps.num_range_data = 90.
--- POSE_GRAPH.optimize_every_n_nodes = 90*2+20 --一个子图插入多少个节点  2*num_range_data以上
--- POSE_GRAPH.constraint_builder.sampling_ratio = 0.3
--- POSE_GRAPH.constraint_builder.max_constraint_distance = 15.
+-- TRAJECTORY_BUILDER_2D.submaps.num_range_data = 200. -- 增大此值（如从 90 改为 150），减少优化频率，提高子图稳定性
+-- POSE_GRAPH.optimize_every_n_nodes = 90 -- 增加后端优化的频率 一个子图插入多少个节点  2*num_range_data以上
+-- POSE_GRAPH.constraint_builder.sampling_ratio = 0.2 -- 约束采样率（0~1），值越大回环检测越频繁
+-- POSE_GRAPH.constraint_builder.max_constraint_distance = 10 -- 值越大，越扩大回环检测的范围 缩小回环检测范围（如从 20 改为 10），避免因视角有限导致的错误匹配
+-- POSE_GRAPH.global_sampling_ratio = 0.3  -- 增加全局优化的采样率  设为0则关闭全局优化
 
 --回环检测阈值，如果不稳定有错误匹配，可以提高这两个值，场景重复可以降低或者关闭回环
-POSE_GRAPH.constraint_builder.min_score = 0.55
-POSE_GRAPH.constraint_builder.global_localization_min_score = 0.60
+POSE_GRAPH.constraint_builder.min_score = 0.95 -- 提高回环检测的最小分数阈值
+POSE_GRAPH.constraint_builder.global_localization_min_score = 0.95 -- 提高全局定位的最小分数阈值
 
 return options 

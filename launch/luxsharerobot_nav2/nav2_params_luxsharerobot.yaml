@@ -189,6 +189,7 @@ controller_server:
       RotateToGoal.scale: 32.0
       RotateToGoal.slowing_factor: 5.0
       RotateToGoal.lookahead_time: -1.0
+      allow_rotating_to_goal: False       #关闭到达目标后的旋转
 
 controller_server_rclcpp_node:
   ros__parameters:
