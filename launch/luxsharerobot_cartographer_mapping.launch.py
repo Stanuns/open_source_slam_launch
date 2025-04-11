@@ -70,9 +70,9 @@ def generate_launch_description():
         #     '-configuration_basename', 'wheeltec_cartographer_mapping.lua'],
         arguments=['-configuration_directory', cartographer_config_dir,
                        '-configuration_basename', configuration_basename],
-        # remappings = [
-        #     ('/odom', '/odom_org'),
-        #     ('/imu','/mobile_base/sensors/imu_data')],
+        remappings = [
+            # ('/odom', '/odom_org'),
+            ('/imu','/imu/data_raw')],
         output = 'screen'
         )
 
