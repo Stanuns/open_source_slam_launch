@@ -22,8 +22,8 @@ setup(
             glob(os.path.join('config', '*.yaml'))),
         (os.path.join('share', package_name, 'config'),
             glob(os.path.join('config', '*.lua'))),
-        (os.path.join('share', package_name, 'params'),
-            glob(os.path.join('params', '*.yaml'))),
+        # (os.path.join('share', package_name, 'params'),
+        #     glob(os.path.join('params', '*.yaml'))),
         (os.path.join('share', package_name, 'rviz'),
             glob(os.path.join('rviz', '*.rviz'))),
 
