@@ -113,7 +113,7 @@ def generate_launch_description():
         description='Automatically startup the nav2 stack')
 
     declare_use_composition_cmd = DeclareLaunchArgument(
-        'use_composition', default_value='True',
+        'use_composition', default_value='False',#True
         description='Whether to use composed bringup')
 
     declare_use_respawn_cmd = DeclareLaunchArgument(
@@ -130,15 +130,15 @@ def generate_launch_description():
             condition=IfCondition(use_namespace),
             namespace=namespace),
 
-        Node(
-            condition=IfCondition(use_composition),
-            name='nav2_container',
-            package='rclcpp_components',
-            executable='component_container_isolated',
-            parameters=[configured_params, {'autostart': autostart}],
-            arguments=['--ros-args', '--log-level', log_level],
-            remappings=remappings,
-            output='screen'),
+        # Node(
+        #     condition=IfCondition(use_composition),
+        #     name='nav2_container',
+        #     package='rclcpp_components',
+        #     executable='component_container_isolated',
+        #     parameters=[configured_params, {'autostart': autostart}],
+        #     arguments=['--ros-args', '--log-level', log_level],
+        #     remappings=remappings,
+        #     output='screen'),
 
         # IncludeLaunchDescription(
         #     PythonLaunchDescriptionSource(os.path.join(launch_dir, 'luxsharerobot_slam_launch.py')),

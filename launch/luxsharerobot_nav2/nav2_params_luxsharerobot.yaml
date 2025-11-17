@@ -2,46 +2,61 @@
 amcl:
   ros__parameters:
     use_sim_time: False
-    alpha1: 1.8 #0.9
-    alpha2: 0.2 #0.1
-    alpha3: 0.1 #0.05
-    alpha4: 0.02 #0.01
-    alpha5: 0.08 #0.04
-    base_frame_id: "base_footprint"
-    beam_skip_distance: 0.5
-    beam_skip_error_threshold: 0.9
-    beam_skip_threshold: 0.3
-    do_beamskip: false
-    global_frame_id: "map"
-    lambda_short: 0.1
-    laser_likelihood_max_dist: 2.0
-    laser_max_range: 100.0
-    laser_min_range: 0.1
-    laser_model_type: "likelihood_field"
-    max_beams: 100 #60
-    max_particles: 4000 #2000
-    min_particles: 1000  #500
-    odom_frame_id: "odom_combined"
-    pf_err: 0.02
-    pf_z: 0.85
+    # alpha1-5里程计运动模型的噪声参数（旋转和平移的噪声系数），值越大，代表噪声越大，对里程计的信任度越低
+    alpha1: 1.8 #0.9        # 旋转噪声（由旋转引起的旋转噪声）
+    alpha2: 0.2 #0.1        # 旋转噪声（由平移引起的旋转噪声）
+    alpha3: 0.1 #0.05       # 平移噪声（由平移引起的平移噪声）
+    alpha4: 0.02 #0.01      # 平移噪声（由旋转引起的平移噪声）
+    alpha5: 0.08 #0.04      # 最终朝向噪声（仅用于全向运动模型）
+
+    base_frame_id: "base_footprint"      # 机器人基座坐标系
+    global_frame_id: "map"               # 全局地图坐标系
+    odom_frame_id: "odom_combined"       # 里程计坐标系
+
+    # 激光束skip参数（处理激光异常值）
+    beam_skip_distance: 0.5              
+    beam_skip_error_threshold: 0.9       
+    beam_skip_threshold: 0.3             
+    do_beamskip: false                   # 是否启用光束跳过 false未启用
+
+    # 激光传感器参数
+    laser_likelihood_max_dist: 2.0       # 似然场最大距离
+    laser_max_range: 100.0               # 激光最大有效距离
+    laser_min_range: 0.1                 # 激光最小有效距离
+    laser_model_type: "likelihood_field" # 激光传感器模型类型（似然场模型）
+
+    # 粒子滤波参数
+    max_beams: 100 #60                   # 每次更新使用的最大激光束数（用于加速计算）
+    max_particles: 8000 #2000 4000       # 最大粒子数（影响定位精度和计算开销）
+    min_particles: 2000  #500 1000       # 最小粒子数（粒子数低于此值时触发重采样）
+    # 重采样参数
+    pf_err: 0.01 #0.02                   # 有效粒子数阈值（用于触发重采样）
+    pf_z: 0.9 #0.85                      # 重采样随机粒子比例
+    resample_interval: 2                 # 重采样间隔（每2次更新重采样一次）
+
     recovery_alpha_fast: 0.0
     recovery_alpha_slow: 0.0
-    resample_interval: 2
-    robot_model_type: "nav2_amcl::DifferentialMotionModel"
+    
+    robot_model_type: "nav2_amcl::DifferentialMotionModel" # 机器人运动模型（差速运动模型）
     save_pose_rate: 0.5
-    sigma_hit: 0.02
-    tf_broadcast: true
+    tf_broadcast: true  # 是否广播tf变换
     transform_tolerance: 0.3
-    update_min_a: 0.06
-    update_min_d: 0.025
-    z_hit: 0.8 # 0.7
-    z_max: 0.001
-    z_rand: 0.059
-    z_short: 0.24
+
+    # 更新条件
+    update_min_a: 0.06     # 最小角度变化（弧度）触发更新
+    update_min_d: 0.025    # 最小距离变化（米）触发更新
+
+    # 传感器模型参数
     scan_topic: scan
+    z_hit: 0.8 # 0.7      # 正确测量的权重（命中概率）
+    z_max: 0.001          # 最大范围测量的权重
+    z_rand: 0.059         # 随机测量的权重
+    z_short: 0.24         # 意外短测量的权重
+    sigma_hit: 0.02       # 测量的标准差
+    lambda_short: 0.1     # 指数分布参数
 
     # Initial Pose
-    set_initial_pose: True
+    set_initial_pose: True  # 是否设置初始位姿
     initial_pose.x: 0.0
     initial_pose.y: 0.0
     initial_pose.z: 0.0
@@ -70,50 +85,50 @@ bt_navigator:
     # nav2_bt_navigator/navigate_through_poses_w_replanning_and_recovery.xml
     # They can be set here or via a RewrittenYaml remap from a parent launch file to Nav2.
     plugin_lib_names:
-    - nav2_compute_path_to_pose_action_bt_node
-    - nav2_compute_path_through_poses_action_bt_node
-    - nav2_smooth_path_action_bt_node
-    - nav2_follow_path_action_bt_node
-    - nav2_spin_action_bt_node
-    - nav2_wait_action_bt_node
-    - nav2_back_up_action_bt_node
-    - nav2_drive_on_heading_bt_node
-    - nav2_clear_costmap_service_bt_node
-    - nav2_is_stuck_condition_bt_node
-    - nav2_goal_reached_condition_bt_node
-    - nav2_goal_updated_condition_bt_node
-    - nav2_globally_updated_goal_condition_bt_node
-    - nav2_is_path_valid_condition_bt_node
-    - nav2_initial_pose_received_condition_bt_node
-    - nav2_reinitialize_global_localization_service_bt_node
-    - nav2_rate_controller_bt_node
-    - nav2_distance_controller_bt_node
-    - nav2_speed_controller_bt_node
-    - nav2_truncate_path_action_bt_node
-    - nav2_truncate_path_local_action_bt_node
-    - nav2_goal_updater_node_bt_node
-    - nav2_recovery_node_bt_node
-    - nav2_pipeline_sequence_bt_node
-    - nav2_round_robin_node_bt_node
-    - nav2_transform_available_condition_bt_node
-    - nav2_time_expired_condition_bt_node
-    - nav2_path_expiring_timer_condition
-    - nav2_distance_traveled_condition_bt_node
-    - nav2_single_trigger_bt_node
-    # - nav2_goal_updated_controller_bt_node
-    - nav2_is_battery_low_condition_bt_node
-    - nav2_navigate_through_poses_action_bt_node
-    - nav2_navigate_to_pose_action_bt_node
-    - nav2_remove_passed_goals_action_bt_node
-    - nav2_planner_selector_bt_node
-    - nav2_controller_selector_bt_node
-    - nav2_goal_checker_selector_bt_node
-    - nav2_controller_cancel_bt_node
-    - nav2_path_longer_on_approach_bt_node
-    - nav2_wait_cancel_bt_node
-    - nav2_spin_cancel_bt_node
-    - nav2_back_up_cancel_bt_node
-    - nav2_drive_on_heading_cancel_bt_node
+      - nav2_compute_path_to_pose_action_bt_node
+      - nav2_compute_path_through_poses_action_bt_node
+      - nav2_smooth_path_action_bt_node
+      - nav2_follow_path_action_bt_node
+      - nav2_spin_action_bt_node
+      - nav2_wait_action_bt_node
+      - nav2_back_up_action_bt_node
+      - nav2_drive_on_heading_bt_node
+      - nav2_clear_costmap_service_bt_node
+      - nav2_is_stuck_condition_bt_node
+      - nav2_goal_reached_condition_bt_node
+      - nav2_goal_updated_condition_bt_node
+      - nav2_globally_updated_goal_condition_bt_node
+      - nav2_is_path_valid_condition_bt_node
+      - nav2_initial_pose_received_condition_bt_node
+      - nav2_reinitialize_global_localization_service_bt_node
+      - nav2_rate_controller_bt_node
+      - nav2_distance_controller_bt_node
+      - nav2_speed_controller_bt_node
+      - nav2_truncate_path_action_bt_node
+      - nav2_truncate_path_local_action_bt_node
+      - nav2_goal_updater_node_bt_node
+      - nav2_recovery_node_bt_node
+      - nav2_pipeline_sequence_bt_node
+      - nav2_round_robin_node_bt_node
+      - nav2_transform_available_condition_bt_node
+      - nav2_time_expired_condition_bt_node
+      - nav2_path_expiring_timer_condition
+      - nav2_distance_traveled_condition_bt_node
+      - nav2_single_trigger_bt_node
+      # - nav2_goal_updated_controller_bt_node
+      - nav2_is_battery_low_condition_bt_node
+      - nav2_navigate_through_poses_action_bt_node
+      - nav2_navigate_to_pose_action_bt_node
+      - nav2_remove_passed_goals_action_bt_node
+      - nav2_planner_selector_bt_node
+      - nav2_controller_selector_bt_node
+      - nav2_goal_checker_selector_bt_node
+      - nav2_controller_cancel_bt_node
+      - nav2_path_longer_on_approach_bt_node
+      - nav2_wait_cancel_bt_node
+      - nav2_spin_cancel_bt_node
+      - nav2_back_up_cancel_bt_node
+      - nav2_drive_on_heading_cancel_bt_node
 
 bt_navigator_rclcpp_node:
   ros__parameters:
@@ -122,20 +137,21 @@ bt_navigator_rclcpp_node:
 controller_server:
   ros__parameters:
     use_sim_time: False
-    controller_frequency: 10.0 #20.0
-    min_x_velocity_threshold: 0.001
-    min_y_velocity_threshold: 0.5
-    min_theta_velocity_threshold: 0.001
+    controller_frequency: 10.0 #20.0                    # 控制器频率10Hz
+    min_x_velocity_threshold: 0.001                     # x方向最小速度阈值   
+    min_y_velocity_threshold: 0.5                       # y方向最小速度阈值（侧向移动）, 差速机器人没有y轴方向的移动
+    min_theta_velocity_threshold: 0.001                 # 角速度最小阈值
     failure_tolerance: 0.3
-    progress_checker_plugin: "progress_checker"
-    goal_checker_plugins: ["general_goal_checker"] # "precise_goal_checker"
-    controller_plugins: ["FollowPath"]
+    progress_checker_plugin: "progress_checker"         # 进度检查器插件
+    goal_checker_plugins: ["general_goal_checker"]      # 目标检查器插件 "precise_goal_checker"
+    controller_plugins: ["FollowPath"]                  # 控制器插件（DWB局部规划器）
 
     # Progress checker parameters
     progress_checker:
-      plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.5
-      movement_time_allowance: 10.0
+      plugin: "nav2_controller::SimpleProgressChecker"  # 简单进度检查器
+      #以下两个是进度检查器的关键参数，用于检测机器人是否卡住：
+      required_movement_radius: 0.4 #0.5                # 要求移动半径0.4m（10秒内需移动此距离)，调大：减少误报，允许机器人在复杂环境中缓慢移动，但是可能延迟卡住检测，机器人实际卡住时反应变慢； 调小，更敏感检测卡住情况，但是在拥挤环境中容易触发恢复行为，打断正常导航
+      movement_time_allowance: 10.0                     # 移动时间允许值10s，调大：给机器人更多时间完成机动； 调小：快速响应卡住情况，但是过早触发恢复行为，打断正常导航
     # Goal checker parameters
     #precise_goal_checker:
     #  plugin: "nav2_controller::SimpleGoalChecker"
@@ -143,54 +159,172 @@ controller_server:
     #  yaw_goal_tolerance: 0.25
     #  stateful: True
     general_goal_checker:
-      stateful: True
-      plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.25 #0.25
-      yaw_goal_tolerance: 0.4 #0.2
+      stateful: True                                   # True:需要持续满足条件才确认到达,避免因短暂位置波动造成的误判
+      plugin: "nav2_controller::SimpleGoalChecker"     # 简单目标检查器
+      xy_goal_tolerance: 0.2 #0.25                     # xy位置容差0.2m
+      yaw_goal_tolerance: 0.4 #0.4                     # 朝向容差0.4弧度（约23度）
     # DWB parameters
     FollowPath:
-      plugin: "dwb_core::DWBLocalPlanner"
-      debug_trajectory_details: True
-      min_vel_x: 0.0 #-1.0
-      min_vel_y: 0.0
-      max_vel_x: 0.5 #1.0
+      plugin: "dwb_core::DWBLocalPlanner"              # DWB局部规划器插件
+      debug_trajectory_details: True                   # 调试轨迹详情
+      min_vel_x: 0.0 #-1.0                             # 最小x线速度（可后退为负值）
+      min_vel_y: 0.0                                   
+      max_vel_x: 0.5 #1.0                              # 最大x线速度0.5m/s
       max_vel_y: 0.0
-      max_vel_theta: 1.5 #1.5
+      max_vel_theta: 1.5 #1.5                          # 最大角速度1.5rad/s
       min_speed_xy: 0.0
       max_speed_xy: 0.5 #1.0
       min_speed_theta: 0.0
       # Add high threshold velocity for turtlebot 3 issue.
       # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
-      acc_lim_x: 0.5
-      acc_lim_y: 0.0
-      acc_lim_theta: 3.0 #1.0
-      decel_lim_x: -0.5
+      acc_lim_x: 0.5                                   # x线加速度限制0.5m/s²
+      acc_lim_y: 0.0                    
+      acc_lim_theta: 3.0 #1.0                          # 角加速度限制3.0rad/s²
+      decel_lim_x: -0.5                                # x线减速度限制-0.5m/s²
       decel_lim_y: 0.0
       decel_lim_theta: -3.0 #-1.0
-      vx_samples: 20
+      # 采样参数
+      vx_samples: 20                                   # x速度采样数20个
       vy_samples: 5
-      vtheta_samples: 20
-      sim_time: 2.5 # 1.7
-      linear_granularity: 0.05
-      angular_granularity: 0.025
-      transform_tolerance: 0.2 #0.2
-      xy_goal_tolerance: 0.25 #0.25
-      trans_stopped_velocity: 0.25
+      vtheta_samples: 20                               # 角速度采样数20个
+      sim_time: 2.5 # 1.7                              # 轨迹前向模拟时间2.5s
+      linear_granularity: 0.05                         # 离散化参数，线性粒度0.05m， 调小：轨迹平滑，但计算量增加
+      angular_granularity: 0.025                       # 离散化参数，角度粒度0.025rad，调小：旋转控制更精确流畅，但计算量增加
+      # 其他参数
+      transform_tolerance: 0.2 #0.2                    # 变换容差0.2s， 调大：对TF延迟更宽容，但可能使用过时的坐标变换； 调小：要求更实时的TF数据，但可能因短暂延迟而失败
+      xy_goal_tolerance: 0.2 #0.25                     # 目标位置容差0.2m
+      trans_stopped_velocity: 0.25                     # 停止判断速度阈值0.25m/s，调大：更容易判断为停止，但可能误判低速移动为停止；调小：更难判断为停止，但停止判断可能延迟；
       short_circuit_trajectory_evaluation: True
       stateful: True
+      # 轨迹评价器 (Critics)
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
       # critics: ["Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-      BaseObstacle.scale: 0.1 #0.04
-      PathAlign.scale: 100.0  #50.0
-      PathAlign.forward_point_distance: 0.1
-      GoalAlign.scale: 10.0
-      GoalAlign.forward_point_distance: 0.1
-      PathDist.scale: 80.0 #50.0
-      GoalDist.scale: 10.0
-      RotateToGoal.scale: 32.0
-      RotateToGoal.slowing_factor: 5.0
-      RotateToGoal.lookahead_time: -1.0
-      allow_rotating_to_goal: True       #开启/关闭到达目标后的旋转
+        # 障碍物避让
+      BaseObstacle.scale: 0.2 #0.04                    # 基础障碍物代价权重0.2
+        # 路径对齐
+      PathAlign.scale: 150.0  #50.0 100.0              # 路径对齐权重150.0
+      PathAlign.forward_point_distance: 0.1            # 前视点距离0.1m， 调大：更前瞻的路径跟踪，转弯更平滑，但可能会切完； 调小：转弯更尖锐，但可能抖动
+        # 目标对齐
+      GoalAlign.scale: 20.0 #10.0                      # 目标对齐权重20.0
+      GoalAlign.forward_point_distance: 0.1            # 前视点距离0.1m， 调大：提前开始对准目标，最终朝向更准确； 调小：接近目标时才对准，可能最终朝向偏差较大
+         # 距离代价
+      PathDist.scale: 100.0 #50.0 80.0                 # 路径距离权重100.0
+      GoalDist.scale: 10.0                             # 目标距离权重10.0
+        # 目标旋转
+      RotateToGoal.scale: 32.0                         # 旋转到目标权重32.0
+      RotateToGoal.slowing_factor: 5.0                 # 减速因子5.0
+      RotateToGoal.lookahead_time: -1.0                # 前视时间-1.0（禁用），禁用(-1):使用 GoalAlign.forward_point_distance: 0.1 的固定距离,在距离目标0.1米处开始旋转对准; 启用(正值):前视距离 = 当前速度 × lookahead_time
+      allow_rotating_to_goal: True                     #开启/关闭到达目标后的旋转
+
+# controller_server:
+#   ros__parameters:
+#     odom_topic: /odometry/filtered
+#     use_sim_time: True
+#     controller_frequency: 5.0
+#     controller_plugin_types: ["teb_local_planner::TebLocalPlannerROS"]
+#     controller_plugins: ["FollowPath"]
+#     FollowPath:
+#       plugin: teb_local_planner::TebLocalPlannerROS
+
+#       teb_autosize: 1.0
+#       dt_ref: 0.3
+#       dt_hysteresis: 0.1
+#       max_samples: 500
+#       global_plan_overwrite_orientation: False
+#       allow_init_with_backwards_motion: False
+#       max_global_plan_lookahead_dist: 3.0
+#       global_plan_viapoint_sep: 0.3
+#       global_plan_prune_distance: 1.0
+#       exact_arc_length: False
+#       feasibility_check_no_poses: 2
+#       publish_feedback: False
+          
+#       # Robot
+#       min_vel_x: 0.0        
+#       max_vel_x: 0.26
+#       max_vel_theta: 1.0 
+#       acc_lim_x: 2.5
+#       acc_lim_theta: 3.2
+
+#       footprint_model: # types: "point", "circular", "two_circles", "line", "polygon"
+#         type: "circular"
+#         radius: 0.20 # for type "circular"
+
+#       # GoalTolerance
+              
+#       free_goal_vel: False
+          
+#       # Obstacles
+          
+#       min_obstacle_dist: 0.27
+#       inflation_dist: 0.6
+#       include_costmap_obstacles: True
+#       costmap_obstacles_behind_robot_dist: 1.0
+#       obstacle_poses_affected: 15
+
+#       dynamic_obstacle_inflation_dist: 0.6
+#       include_dynamic_obstacles: True 
+
+#       costmap_converter_plugin: "costmap_converter::CostmapToPolygonsDBSMCCH"
+#       costmap_converter_spin_thread: True
+#       costmap_converter_rate: 5
+
+#       # Optimization
+          
+#       no_inner_iterations: 5
+#       no_outer_iterations: 4
+#       optimization_activate: True
+#       optimization_verbose: False
+#       penalty_epsilon: 0.1
+#       obstacle_cost_exponent: 4.0
+#       weight_max_vel_x: 0.5
+#       weight_max_vel_theta: 0.5
+#       weight_acc_lim_x: 0.5
+#       weight_acc_lim_theta: 10.5
+#       weight_kinematics_nh: 1000.0
+#       weight_kinematics_forward_drive: 3.0
+#       weight_kinematics_turning_radius: 1.0
+#       weight_optimaltime: 1.0 # must be > 0
+#       weight_shortest_path: 0.0
+#       weight_obstacle: 100.0
+#       weight_inflation: 0.2
+#       weight_dynamic_obstacle: 10.0 # not in use yet
+#       weight_dynamic_obstacle_inflation: 0.2
+#       weight_viapoint: 50.0
+#       weight_adapt_factor: 2.0
+
+#       # Homotopy Class Planner
+
+#       enable_homotopy_class_planning: True
+#       enable_multithreading: True
+#       max_number_classes: 4
+#       selection_cost_hysteresis: 5.0
+#       selection_prefer_initial_plan: 1.0
+#       selection_obst_cost_scale: 1.0
+#       selection_alternative_time_cost: True
+
+#       roadmap_graph_no_samples: 15
+#       roadmap_graph_area_width: 5.0
+#       roadmap_graph_area_length_scale: 1.0
+#       h_signature_prescaler: 0.5
+#       h_signature_threshold: 0.1
+#       obstacle_heading_threshold: 0.45
+#       switching_blocking_period: 0.0
+#       viapoints_all_candidates: True
+#       delete_detours_backwards: True
+#       max_ratio_detours_duration_best_duration: 3.0
+#       visualize_hc_graph: False
+#       visualize_with_time_as_z_axis_scale: 0.0
+
+#       # Recovery
+      
+#       shrink_horizon_backup: True
+#       shrink_horizon_min_duration: 10.0
+#       oscillation_recovery: True
+#       oscillation_v_eps: 0.1
+#       oscillation_omega_eps: 0.1
+#       oscillation_recovery_min_duration: 10.0
+#       oscillation_filter_duration: 10.0
 
 controller_server_rclcpp_node:
   ros__parameters:
@@ -199,53 +333,53 @@ controller_server_rclcpp_node:
 local_costmap:
   local_costmap:
     ros__parameters:
-      update_frequency: 10.0
-      publish_frequency: 2.0
-      global_frame: odom_combined
-      robot_base_frame: base_footprint
+      update_frequency: 20.0           # 更新频率20Hz（高频更新，用于实时避障）
+      publish_frequency: 10.0
+      global_frame: odom_combined      # 全局坐标系（里程计融合坐标系）
+      robot_base_frame: base_footprint # 机器人基座坐标系
       use_sim_time: False
-      rolling_window: true
-      width: 3
-      height: 3
-      resolution: 0.05
-      robot_radius: 0.20
+      rolling_window: true   # 使用滚动窗口模式（local_costmap地图随机器人移动）
+      width: 3               # local_costmap地图宽度3米
+      height: 3              # local_costmap地图高度3米
+      resolution: 0.05       # 分辨率0.05m/像素
+      robot_radius: 0.3      # 机器人半径0.3m（用于圆形机器人模型）
       # footprint: "[ [-0.03, -0.0900], [-0.03, 0.0900], [0.2, 0.0900], [0.2, -0.0900] ]"
-      plugins: ["voxel_layer", "inflation_layer"]
+      plugins: ["voxel_layer", "inflation_layer"] # 使用的图层
       inflation_layer:
-        plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 10.0 # 3.0 10.0
-        inflation_radius: 0.5   # 0.25 0.5
+        plugin: "nav2_costmap_2d::InflationLayer" # 膨胀图层插件
+        cost_scaling_factor: 3.0 # 3.0 10.0       # 代价缩放因子3.0（控制代价衰减速度),这个值越大，安全区域越小，越靠近障碍物行驶
+        inflation_radius: 0.35   # 0.25 0.5       # local_costmap膨胀半径0.35m
       voxel_layer:
-        plugin: "nav2_costmap_2d::VoxelLayer"
+        plugin: "nav2_costmap_2d::VoxelLayer" # 3D体素图层插件
         enabled: True
         publish_voxel_map: True
-        origin_z: 0.0
-        z_resolution: 0.05
-        z_voxels: 16
-        max_obstacle_height: 2.0
-        mark_threshold: 0
-        observation_sources: scan pointcloud
+        origin_z: 0.0                         # 原点Z坐标，表示体素地图的Z轴原点位于地面（z=0m）高度
+        z_resolution: 0.05                    # Z轴分辨率0.05m
+        z_voxels: 16                          # Z轴体素数（16×0.05=0.8m高度）
+        max_obstacle_height: 2.0              # 最大障碍物高度2.0m
+        mark_threshold: 1                     # 标记阈值（1个体素即视为障碍物)
+        observation_sources: scan pointcloud  # **使用激光雷达数据/scan与RGBD相机数据/pointcloud进行避障**
         scan:
-          topic: /scan
-          max_obstacle_height: 2.0
-          clearing: True
-          marking: True
-          data_type: "LaserScan"
-          raytrace_max_range: 10.0 #10.0
-          raytrace_min_range: 0.2
-          obstacle_max_range: 2.5
-          obstacle_min_range: 0.2
+          topic: /scan                        # 激光雷达数据topic
+          max_obstacle_height: 2.0            # 最大障碍物高度
+          clearing: True                      # 启用障碍物清除，设置True：当传感器检测到之前标记为障碍物的区域现在为空闲时，清除该区域的障碍物标记。
+          marking: True                       # 启用障碍物标记，设置True：当传感器检测到障碍物时，在代价地图中标记相应区域。
+          data_type: "LaserScan"              # 数据类型
+          raytrace_max_range: 10.0 #10.0      # 光线追踪最大范围10m （调大能更好的清除远处障碍物，增加计算开销；调小减少计算量，减小远处传感器噪声影响）
+          raytrace_min_range: 0.2             # 光线追踪最小范围0.2m （调大能更好的减少近处噪声，但近处障碍物清除能力下降；调小能够更精确的近处障碍物处理，增加计算开销）
+          obstacle_max_range: 2.5             # 障碍物检测最大范围2.5m(距离机器人)
+          obstacle_min_range: 0.05            # 障碍物检测最小范围0.05m(距离机器人)
         pointcloud:
-          topic: /camera/camera/depth/color/points
-          max_obstacle_height: 1.5
-          min_obstacle_height: 0.1
-          clearing: True
-          marking: True
-          data_type: "PointCloud2"
-          raytrace_max_range: 3.0
-          raytrace_min_range: 0.05
-          obstacle_max_range: 3.0
-          obstacle_min_range: 0.05
+          topic: /pointcloud                 # RGBD相机点云数据topic
+          max_obstacle_height: 1.5           # 最大障碍物高度1.5m
+          min_obstacle_height: 0.12          # 最小障碍物高度0.12m（过滤地面，由于点云误差设置成0.12m）
+          clearing: True                     # 启用障碍物清除, 设置True：当传感器检测到之前标记为障碍物的区域现在为空闲时，清除该区域的障碍物标记。
+          marking: True                      # 启用障碍物标记，设置True：当传感器检测到障碍物时，在代价地图中标记相应区域。
+          data_type: "PointCloud2"           # 数据类型
+          raytrace_max_range: 4.0            # 光线追踪最大范围4m  （调大能更好的清除远处障碍物，增加计算开销；调小减少计算量，减小远处传感器噪声影响）
+          raytrace_min_range: 0.05           # 光线追踪最小范围0.05m (调大能更好的减少近处噪声，但近处障碍物清除能力下降；调小能够更精确的近处障碍物处理，增加计算开销）
+          obstacle_max_range: 3.0            # 障碍物检测最大范围3m(距离机器人)
+          obstacle_min_range: 0.01           # 障碍物检测最小范围0.01m(距离机器人)
 
       always_send_full_costmap: True
   local_costmap_client:
@@ -258,48 +392,52 @@ local_costmap:
 global_costmap:
   global_costmap:
     ros__parameters:
-      update_frequency: 1.0
-      publish_frequency: 1.0
+      update_frequency: 5.0                   # 更新频率5Hz（低频更新）
+      publish_frequency: 2.0
       global_frame: map
       robot_base_frame: base_footprint
       use_sim_time: False
-      robot_radius: 0.20
+      robot_radius: 0.3                       # 机器人半径0.3m（用于圆形机器人模型）
       #footprint: "[ [-0.03, -0.0900], [-0.03, 0.0900], [0.2, 0.0900], [0.2, -0.0900] ]"
       resolution: 0.05
-      track_unknown_space: true
+      track_unknown_space: true               # 跟踪未知空间（为true时未知区域可通行）
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
       obstacle_layer:
+        mark_threshold: 1
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        observation_sources: scan
+        observation_sources: scan pointcloud  # **使用激光雷达数据/scan与RGBD相机数据/pointcloud进行避障**
         scan:
-          topic: /scan
+          topic: /scan                        # 激光雷达数据topic
           max_obstacle_height: 2.0
           clearing: True
           marking: True
           data_type: "LaserScan"
           raytrace_max_range: 10.0
           raytrace_min_range: 0.2
-          obstacle_max_range: 2.5
-          obstacle_min_range: 0.2
+          obstacle_max_range: 3.0
+          obstacle_min_range: 0.05
+          observation_persistence: 0.0      #障碍物持久性，0.0：实时性最好，但对传感器噪声更敏感；调大对短暂障碍物更鲁棒，减少障碍物闪烁，缺点是致已移动障碍物的残留
         pointcloud:
-          topic: /camera/camera/depth/color/points
-          max_obstacle_height: 1.5
-          min_obstacle_height: 0.1
+          topic: /pointcloud                # RGBD相机点云数据topic
+          max_obstacle_height: 1.5          
+          min_obstacle_height: 0.12
           clearing: True
           marking: True
           data_type: "PointCloud2"
-          raytrace_max_range: 6.0
+          raytrace_max_range: 10.0
           raytrace_min_range: 0.1
           obstacle_max_range: 3.0
-          obstacle_min_range: 0.1
+          obstacle_min_range: 0.01
+          observation_persistence: 0.0     #障碍物持久性，0.0：实时性最好，但对传感器噪声更敏感；调大对短暂障碍物更鲁棒，减少障碍物闪烁，缺点是致已移动障碍物的残留
       static_layer:
-        plugin: "nav2_costmap_2d::StaticLayer"
-        map_subscribe_transient_local: True
+        plugin: "nav2_costmap_2d::StaticLayer"      # 静态地图图层
+        map_subscribe_transient_local: True         
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 5.0 #5.0
-        inflation_radius: 0.5
+        cost_scaling_factor: 10.0 #5.0              # 代价缩放因子
+        inflation_radius: 0.35                      # 膨胀半径
+        decay_time: 0.0                             # 0.0表示代价值立即衰减到0； 增大，比如从0.0改为1.0（提供更平滑的代价衰减），提供历史障碍物信息，对短暂遮挡更稳定，缺点是导致已清除障碍物的代价值残留
       always_send_full_costmap: True
   global_costmap_client:
     ros__parameters:
@@ -312,6 +450,7 @@ map_server:
   ros__parameters:
     use_sim_time: False
     yaml_filename: ""
+    frame_id: "map"
 
 map_saver:
   ros__parameters:
@@ -331,6 +470,7 @@ planner_server:
       tolerance: 0.5
       use_astar: false
       allow_unknown: true
+      cost_factor: 5.0
 
 planner_server_rclcpp_node:
   ros__parameters:

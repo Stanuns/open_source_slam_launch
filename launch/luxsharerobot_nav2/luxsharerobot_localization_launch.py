@@ -130,7 +130,7 @@ def generate_launch_description():
                 parameters=[configured_params],
                 arguments=['--ros-args', '--log-level', log_level],
                 remappings=remappings),
-            Node(
+            Node( #这部分必要，启动map_server, amcl节点
                 package='nav2_lifecycle_manager',
                 executable='lifecycle_manager',
                 name='lifecycle_manager_localization',
@@ -187,6 +187,6 @@ def generate_launch_description():
 
     # Add the actions to launch all of the localiztion nodes
     ld.add_action(load_nodes)
-    ld.add_action(load_composable_nodes)
+    # ld.add_action(load_composable_nodes)
 
     return ld

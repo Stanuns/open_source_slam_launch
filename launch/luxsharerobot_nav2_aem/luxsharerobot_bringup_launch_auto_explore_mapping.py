@@ -33,8 +33,9 @@ def generate_launch_description():
     log_level = LaunchConfiguration('log_level')
  
     remappings = [('/tf', 'tf'),
-                  ('/tf_static', 'tf_static'),
-                  ('odom', 'odom_org')]
+                  ('/tf_static', 'tf_static')
+                #   ('odom', 'odom_org')
+                  ]
  
     configured_params = RewrittenYaml(
         source_file=params_file,

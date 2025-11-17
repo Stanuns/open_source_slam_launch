@@ -285,6 +285,6 @@ def generate_launch_description():
     ld.add_action(declare_log_level_cmd)
     # Add the actions to launch all of the navigation nodes
     ld.add_action(load_nodes)
-    ld.add_action(load_composable_nodes)
+    # ld.add_action(load_composable_nodes)
 
     return ld

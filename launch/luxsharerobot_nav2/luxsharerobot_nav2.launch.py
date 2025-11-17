@@ -36,7 +36,7 @@ def generate_launch_description():
         default=os.path.join(
             get_package_share_directory('map_server_extension'),
             'maps',
-            'map_lx_suzhouoffice_0429.yaml')) #AutoExploreMap_16167.yaml
+            'njoffice0604.yaml')) #AutoExploreMap_16167.yaml
 
     param_file_name = 'nav2_params_luxsharerobot.yaml'
     param_dir = LaunchConfiguration(
