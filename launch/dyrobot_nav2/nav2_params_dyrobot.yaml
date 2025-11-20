@@ -1,75 +1,4 @@
 #source from wheeltec_nav2: param_mini_diff.yaml
-# amcl:
-#   ros__parameters:
-#     use_sim_time: False
-#     # alpha1-5里程计运动模型的噪声参数（旋转和平移的噪声系数），值越大，代表噪声越大，对里程计的信任度越低
-#     alpha1: 1.8 #0.9        # 旋转噪声（由旋转引起的旋转噪声）
-#     alpha2: 0.2 #0.1        # 旋转噪声（由平移引起的旋转噪声）
-#     alpha3: 0.1 #0.05       # 平移噪声（由平移引起的平移噪声）
-#     alpha4: 0.02 #0.01      # 平移噪声（由旋转引起的平移噪声）
-#     alpha5: 0.08 #0.04      # 最终朝向噪声（仅用于全向运动模型）
-
-#     base_frame_id: "base_footprint"      # 机器人基座坐标系
-#     global_frame_id: "map"               # 全局地图坐标系
-#     odom_frame_id: "odom"       # 里程计坐标系
-
-#     # 激光束skip参数（处理激光异常值）
-#     beam_skip_distance: 0.5              
-#     beam_skip_error_threshold: 0.9       
-#     beam_skip_threshold: 0.3             
-#     do_beamskip: false                   # 是否启用光束跳过 false未启用
-
-#     # 激光传感器参数
-#     laser_likelihood_max_dist: 2.0       # 似然场最大距离
-#     laser_max_range: 100.0               # 激光最大有效距离
-#     laser_min_range: 0.1                 # 激光最小有效距离
-#     laser_model_type: "likelihood_field" # 激光传感器模型类型（似然场模型）
-
-#     # 粒子滤波参数
-#     max_beams: 100 #60                   # 每次更新使用的最大激光束数（用于加速计算）
-#     max_particles: 8000 #2000 4000       # 最大粒子数（影响定位精度和计算开销）
-#     min_particles: 2000  #500 1000       # 最小粒子数（粒子数低于此值时触发重采样）
-#     # 重采样参数
-#     pf_err: 0.01 #0.02                   # 有效粒子数阈值（用于触发重采样）
-#     pf_z: 0.9 #0.85                      # 重采样随机粒子比例
-#     resample_interval: 2                 # 重采样间隔（每2次更新重采样一次）
-
-#     recovery_alpha_fast: 0.0
-#     recovery_alpha_slow: 0.0
-    
-#     robot_model_type: "nav2_amcl::DifferentialMotionModel" # 机器人运动模型（差速运动模型）
-#     save_pose_rate: 0.5
-#     tf_broadcast: true  # 是否广播tf变换
-#     transform_tolerance: 0.3
-
-#     # 更新条件
-#     update_min_a: 0.06     # 最小角度变化（弧度）触发更新
-#     update_min_d: 0.025    # 最小距离变化（米）触发更新
-
-#     # 传感器模型参数
-#     scan_topic: scan
-#     z_hit: 0.8 # 0.7      # 正确测量的权重（命中概率）
-#     z_max: 0.001          # 最大范围测量的权重
-#     z_rand: 0.059         # 随机测量的权重
-#     z_short: 0.24         # 意外短测量的权重
-#     sigma_hit: 0.02       # 测量的标准差
-#     lambda_short: 0.1     # 指数分布参数
-
-#     # Initial Pose
-#     set_initial_pose: True  # 是否设置初始位姿
-#     initial_pose.x: 0.0
-#     initial_pose.y: 0.0
-#     initial_pose.z: 0.0
-#     initial_pose.yaw: 0.0
-
-# amcl_map_client:
-#   ros__parameters:
-#     use_sim_time: False
-
-# amcl_rclcpp_node:
-#   ros__parameters:
-#     use_sim_time: False
-
 bt_navigator:
   ros__parameters:
     use_sim_time: False
@@ -223,8 +152,32 @@ controller_server:
     controller_frequency: 5.0
     controller_plugin_types: ["teb_local_planner::TebLocalPlannerROS"]
     controller_plugins: ["FollowPath"]
+
+    # Add goal checker configuration for TEB planner
+    goal_checker_plugins: ["general_goal_checker"]
+    progress_checker_plugin: "progress_checker"
+    
+    # Progress checker parameters
+    progress_checker:
+      plugin: "nav2_controller::SimpleProgressChecker"
+      required_movement_radius: 0.3
+      movement_time_allowance: 10.0
+    
+    # Goal checker parameters
+    general_goal_checker:
+      plugin: "nav2_controller::SimpleGoalChecker"
+      xy_goal_tolerance: 0.25
+      yaw_goal_tolerance: 0.4
+      stateful: True
+
     FollowPath:
       plugin: teb_local_planner::TebLocalPlannerROS
+
+      # Add goal tolerance parameters for TEB
+      xy_goal_tolerance: 0.25
+      yaw_goal_tolerance: 0.4
+      free_goal_vel: False
+      complete_global_plan: True
 
       teb_autosize: 1.0
       dt_ref: 0.3
@@ -241,26 +194,27 @@ controller_server:
           
       # Robot
       min_vel_x: 0.0        
-      max_vel_x: 0.26
+      max_vel_x: 1.0
       max_vel_theta: 1.0 
       acc_lim_x: 2.5
       acc_lim_theta: 3.2
 
       footprint_model: # types: "point", "circular", "two_circles", "line", "polygon"
-        type: "circular"
-        radius: 0.20 # for type "circular"
+        type: "polygon"
+        # radius: 0.20 # for type "circular"
+        vertices: "[-0.36, -0.25], [-0.36, 0.25], [0.36, 0.25], [0.36, -0.25]"
 
-      # GoalTolerance
-      free_goal_vel: False
+      # # GoalTolerance
+      # free_goal_vel: False
           
       # Obstacles
-      min_obstacle_dist: 0.27
-      inflation_dist: 0.6
+      min_obstacle_dist: 0.3
+      inflation_dist: 0.5
       include_costmap_obstacles: True
       costmap_obstacles_behind_robot_dist: 1.0
       obstacle_poses_affected: 15
 
-      dynamic_obstacle_inflation_dist: 0.6
+      dynamic_obstacle_inflation_dist: 0.5
       include_dynamic_obstacles: True 
 
       costmap_converter_plugin: "costmap_converter::CostmapToPolygonsDBSMCCH"
@@ -268,8 +222,8 @@ controller_server:
       costmap_converter_rate: 5
 
       # Optimization
-      no_inner_iterations: 5
-      no_outer_iterations: 4
+      no_inner_iterations: 3
+      no_outer_iterations: 2
       optimization_activate: True
       optimization_verbose: False
       penalty_epsilon: 0.1
@@ -283,7 +237,7 @@ controller_server:
       weight_kinematics_turning_radius: 1.0
       weight_optimaltime: 1.0 # must be > 0
       weight_shortest_path: 0.0
-      weight_obstacle: 100.0
+      weight_obstacle: 50.0
       weight_inflation: 0.2
       weight_dynamic_obstacle: 10.0 # not in use yet
       weight_dynamic_obstacle_inflation: 0.2
@@ -292,14 +246,14 @@ controller_server:
 
       # Homotopy Class Planner
       enable_homotopy_class_planning: True
-      enable_multithreading: True
-      max_number_classes: 4
+      enable_multithreading: False # Disabled for stability
+      max_number_classes: 2
       selection_cost_hysteresis: 5.0
       selection_prefer_initial_plan: 1.0
       selection_obst_cost_scale: 1.0
       selection_alternative_time_cost: True
 
-      roadmap_graph_no_samples: 15
+      roadmap_graph_no_samples: 10
       roadmap_graph_area_width: 5.0
       roadmap_graph_area_length_scale: 1.0
       h_signature_prescaler: 0.5
@@ -328,22 +282,22 @@ controller_server_rclcpp_node:
 local_costmap:
   local_costmap:
     ros__parameters:
-      update_frequency: 20.0           # 更新频率20Hz（高频更新，用于实时避障）
-      publish_frequency: 10.0
-      global_frame: camera_init #odom_combined      # 全局坐标系（里程计融合坐标系）
+      update_frequency: 10.0           # 更新频率20Hz（高频更新，用于实时避障）
+      publish_frequency: 5.0
+      global_frame: map #odom_combined      # 全局坐标系（里程计融合坐标系）
       robot_base_frame: base_footprint # 机器人基座坐标系
       use_sim_time: False
       rolling_window: true   # 使用滚动窗口模式（local_costmap地图随机器人移动）
-      width: 3               # local_costmap地图宽度3米
-      height: 3              # local_costmap地图高度3米
+      width: 4               # local_costmap地图宽度3米
+      height: 4              # local_costmap地图高度3米
       resolution: 0.05       # 分辨率0.05m/像素
-      robot_radius: 0.3      # 机器人半径0.3m（用于圆形机器人模型）
-      # footprint: "[ [-0.03, -0.0900], [-0.03, 0.0900], [0.2, 0.0900], [0.2, -0.0900] ]"
+      # robot_radius: 0.3      # 机器人半径0.3m（用于圆形机器人模型）
+      footprint: "[ [-0.36, -0.25], [-0.36, 0.25], [0.36, 0.25], [0.36, -0.25] ]"
       plugins: ["voxel_layer", "inflation_layer"] # 使用的图层
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer" # 膨胀图层插件
         cost_scaling_factor: 3.0 # 3.0 10.0       # 代价缩放因子3.0（控制代价衰减速度),这个值越大，安全区域越小，越靠近障碍物行驶
-        inflation_radius: 0.35   # 0.25 0.5       # local_costmap膨胀半径0.35m
+        inflation_radius: 0.45   # 0.25 0.5       # local_costmap膨胀半径0.35m
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer" # 3D体素图层插件
         enabled: True
@@ -382,8 +336,8 @@ global_costmap:
       global_frame: map
       robot_base_frame: base_footprint
       use_sim_time: False
-      robot_radius: 0.3                       # 机器人半径0.3m（用于圆形机器人模型）
-      #footprint: "[ [-0.03, -0.0900], [-0.03, 0.0900], [0.2, 0.0900], [0.2, -0.0900] ]"
+      # robot_radius: 0.3                       # 机器人半径0.3m（用于圆形机器人模型）
+      footprint: "[ [-0.36, -0.25], [-0.36, 0.25], [0.36, 0.25], [0.36, -0.25] ]"
       resolution: 0.05
       track_unknown_space: true               # 跟踪未知空间（为true时未知区域可通行）
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -410,7 +364,7 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 10.0 #5.0              # 代价缩放因子
-        inflation_radius: 0.35                      # 膨胀半径
+        inflation_radius: 0.45                      # 膨胀半径
         decay_time: 0.0                             # 0.0表示代价值立即衰减到0； 增大，比如从0.0改为1.0（提供更平滑的代价衰减），提供历史障碍物信息，对短暂遮挡更稳定，缺点是导致已清除障碍物的代价值残留
       always_send_full_costmap: True
   global_costmap_client:
@@ -474,9 +428,9 @@ behavior_server:
       plugin: "nav2_behaviors/DriveOnHeading"
     wait:
       plugin: "nav2_behaviors/Wait"
-    global_frame: camera_init #odom_combined
+    global_frame: map #odom_combined
     robot_base_frame: base_footprint
-    transform_tolerance: 0.1
+    transform_tolerance: 0.2
     use_sim_time: False
     simulate_ahead_time: 2.0
     max_rotational_vel: 0.7
