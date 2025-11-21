@@ -32,13 +32,13 @@ from nav2_common.launch import RewrittenYaml
 
 
 def generate_launch_description():
-    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     map_dir = LaunchConfiguration(
         'map',
         default=os.path.join(
             get_package_share_directory('map_server_extension'),
             'maps',
-            'map_1030.yaml')) #
+            'wholeoffice_1030.yaml')) #
 
     param_file_name = 'nav2_params_dyrobot.yaml'
     nav2_param_dir = LaunchConfiguration(
@@ -137,7 +137,7 @@ def generate_launch_description():
                         {'node_names': ['map_server']}]
         ),
         
-        #navigation
+        # navigation
         Node(
             package='nav2_controller',
             executable='controller_server',
