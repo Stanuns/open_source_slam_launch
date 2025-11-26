@@ -38,7 +38,7 @@ def generate_launch_description():
         default=os.path.join(
             get_package_share_directory('map_server_extension'),
             'maps',
-            'wholeoffice_1030.yaml')) #
+            'custom_saved_map.yaml')) #
 
     param_file_name = 'nav2_params_dyrobot.yaml'
     nav2_param_dir = LaunchConfiguration(

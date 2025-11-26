@@ -63,217 +63,217 @@ bt_navigator_rclcpp_node:
   ros__parameters:
     use_sim_time: False
 
-# controller_server:
-#   ros__parameters:
-#     use_sim_time: False
-#     controller_frequency: 10.0 #20.0                    # 控制器频率10Hz
-#     min_x_velocity_threshold: 0.001                     # x方向最小速度阈值   
-#     min_y_velocity_threshold: 0.5                       # y方向最小速度阈值（侧向移动）, 差速机器人没有y轴方向的移动
-#     min_theta_velocity_threshold: 0.001                 # 角速度最小阈值
-#     failure_tolerance: 0.3
-#     progress_checker_plugin: "progress_checker"         # 进度检查器插件
-#     goal_checker_plugins: ["general_goal_checker"]      # 目标检查器插件 "precise_goal_checker"
-#     controller_plugins: ["FollowPath"]                  # 控制器插件（DWB局部规划器）
-
-#     # Progress checker parameters
-#     progress_checker:
-#       plugin: "nav2_controller::SimpleProgressChecker"  # 简单进度检查器
-#       #以下两个是进度检查器的关键参数，用于检测机器人是否卡住：
-#       required_movement_radius: 0.4 #0.5                # 要求移动半径0.4m（10秒内需移动此距离)，调大：减少误报，允许机器人在复杂环境中缓慢移动，但是可能延迟卡住检测，机器人实际卡住时反应变慢； 调小，更敏感检测卡住情况，但是在拥挤环境中容易触发恢复行为，打断正常导航
-#       movement_time_allowance: 10.0                     # 移动时间允许值10s，调大：给机器人更多时间完成机动； 调小：快速响应卡住情况，但是过早触发恢复行为，打断正常导航
-#     # Goal checker parameters
-#     #precise_goal_checker:
-#     #  plugin: "nav2_controller::SimpleGoalChecker"
-#     #  xy_goal_tolerance: 0.25
-#     #  yaw_goal_tolerance: 0.25
-#     #  stateful: True
-#     general_goal_checker:
-#       stateful: True                                   # True:需要持续满足条件才确认到达,避免因短暂位置波动造成的误判
-#       plugin: "nav2_controller::SimpleGoalChecker"     # 简单目标检查器
-#       xy_goal_tolerance: 0.2 #0.25                     # xy位置容差0.2m
-#       yaw_goal_tolerance: 0.4 #0.4                     # 朝向容差0.4弧度（约23度）
-#     # DWB parameters
-#     FollowPath:
-#       plugin: "dwb_core::DWBLocalPlanner"              # DWB局部规划器插件
-#       debug_trajectory_details: True                   # 调试轨迹详情
-#       min_vel_x: 0.0 #-1.0                             # 最小x线速度（可后退为负值）
-#       min_vel_y: 0.0                                   
-#       max_vel_x: 0.5 #1.0                              # 最大x线速度0.5m/s
-#       max_vel_y: 0.0
-#       max_vel_theta: 1.5 #1.5                          # 最大角速度1.5rad/s
-#       min_speed_xy: 0.0
-#       max_speed_xy: 0.5 #1.0
-#       min_speed_theta: 0.0
-#       # Add high threshold velocity for turtlebot 3 issue.
-#       # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
-#       acc_lim_x: 0.5                                   # x线加速度限制0.5m/s²
-#       acc_lim_y: 0.0                    
-#       acc_lim_theta: 3.0 #1.0                          # 角加速度限制3.0rad/s²
-#       decel_lim_x: -0.5                                # x线减速度限制-0.5m/s²
-#       decel_lim_y: 0.0
-#       decel_lim_theta: -3.0 #-1.0
-#       # 采样参数
-#       vx_samples: 20                                   # x速度采样数20个
-#       vy_samples: 5
-#       vtheta_samples: 20                               # 角速度采样数20个
-#       sim_time: 2.5 # 1.7                              # 轨迹前向模拟时间2.5s
-#       linear_granularity: 0.05                         # 离散化参数，线性粒度0.05m， 调小：轨迹平滑，但计算量增加
-#       angular_granularity: 0.025                       # 离散化参数，角度粒度0.025rad，调小：旋转控制更精确流畅，但计算量增加
-#       # 其他参数
-#       transform_tolerance: 0.2 #0.2                    # 变换容差0.2s， 调大：对TF延迟更宽容，但可能使用过时的坐标变换； 调小：要求更实时的TF数据，但可能因短暂延迟而失败
-#       xy_goal_tolerance: 0.2 #0.25                     # 目标位置容差0.2m
-#       trans_stopped_velocity: 0.25                     # 停止判断速度阈值0.25m/s，调大：更容易判断为停止，但可能误判低速移动为停止；调小：更难判断为停止，但停止判断可能延迟；
-#       short_circuit_trajectory_evaluation: True
-#       stateful: True
-#       # 轨迹评价器 (Critics)
-#       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-#       # critics: ["Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-#         # 障碍物避让
-#       BaseObstacle.scale: 0.2 #0.04                    # 基础障碍物代价权重0.2
-#         # 路径对齐
-#       PathAlign.scale: 150.0  #50.0 100.0              # 路径对齐权重150.0
-#       PathAlign.forward_point_distance: 0.1            # 前视点距离0.1m， 调大：更前瞻的路径跟踪，转弯更平滑，但可能会切完； 调小：转弯更尖锐，但可能抖动
-#         # 目标对齐
-#       GoalAlign.scale: 20.0 #10.0                      # 目标对齐权重20.0
-#       GoalAlign.forward_point_distance: 0.1            # 前视点距离0.1m， 调大：提前开始对准目标，最终朝向更准确； 调小：接近目标时才对准，可能最终朝向偏差较大
-#          # 距离代价
-#       PathDist.scale: 100.0 #50.0 80.0                 # 路径距离权重100.0
-#       GoalDist.scale: 10.0                             # 目标距离权重10.0
-#         # 目标旋转
-#       RotateToGoal.scale: 32.0                         # 旋转到目标权重32.0
-#       RotateToGoal.slowing_factor: 5.0                 # 减速因子5.0
-#       RotateToGoal.lookahead_time: -1.0                # 前视时间-1.0（禁用），禁用(-1):使用 GoalAlign.forward_point_distance: 0.1 的固定距离,在距离目标0.1米处开始旋转对准; 启用(正值):前视距离 = 当前速度 × lookahead_time
-#       allow_rotating_to_goal: True                     #开启/关闭到达目标后的旋转
-
 controller_server:
   ros__parameters:
-    odom_topic: /camera_init
-    use_sim_time: True
-    controller_frequency: 5.0
-    controller_plugin_types: ["teb_local_planner::TebLocalPlannerROS"]
-    controller_plugins: ["FollowPath"]
+    use_sim_time: False
+    controller_frequency: 10.0 #20.0                    # 控制器频率10Hz
+    min_x_velocity_threshold: 0.001                     # x方向最小速度阈值   
+    min_y_velocity_threshold: 0.5                       # y方向最小速度阈值（侧向移动）, 差速机器人没有y轴方向的移动
+    min_theta_velocity_threshold: 0.001                 # 角速度最小阈值
+    failure_tolerance: 0.3
+    progress_checker_plugin: "progress_checker"         # 进度检查器插件
+    goal_checker_plugins: ["general_goal_checker"]      # 目标检查器插件 "precise_goal_checker"
+    controller_plugins: ["FollowPath"]                  # 控制器插件（DWB局部规划器）
 
-    # Add goal checker configuration for TEB planner
-    goal_checker_plugins: ["general_goal_checker"]
-    progress_checker_plugin: "progress_checker"
-    
     # Progress checker parameters
     progress_checker:
-      plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.3
-      movement_time_allowance: 10.0
-    
+      plugin: "nav2_controller::SimpleProgressChecker"  # 简单进度检查器
+      #以下两个是进度检查器的关键参数，用于检测机器人是否卡住：
+      required_movement_radius: 0.4 #0.5                # 要求移动半径0.4m（10秒内需移动此距离)，调大：减少误报，允许机器人在复杂环境中缓慢移动，但是可能延迟卡住检测，机器人实际卡住时反应变慢； 调小，更敏感检测卡住情况，但是在拥挤环境中容易触发恢复行为，打断正常导航
+      movement_time_allowance: 10.0                     # 移动时间允许值10s，调大：给机器人更多时间完成机动； 调小：快速响应卡住情况，但是过早触发恢复行为，打断正常导航
     # Goal checker parameters
+    #precise_goal_checker:
+    #  plugin: "nav2_controller::SimpleGoalChecker"
+    #  xy_goal_tolerance: 0.25
+    #  yaw_goal_tolerance: 0.25
+    #  stateful: True
     general_goal_checker:
-      plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.4
-      stateful: True
-
+      stateful: True                                   # True:需要持续满足条件才确认到达,避免因短暂位置波动造成的误判
+      plugin: "nav2_controller::SimpleGoalChecker"     # 简单目标检查器
+      xy_goal_tolerance: 0.2 #0.25                     # xy位置容差0.2m
+      yaw_goal_tolerance: 0.4 #0.4                     # 朝向容差0.4弧度（约23度）
+    # DWB parameters
     FollowPath:
-      plugin: teb_local_planner::TebLocalPlannerROS
+      plugin: "dwb_core::DWBLocalPlanner"              # DWB局部规划器插件
+      debug_trajectory_details: True                   # 调试轨迹详情
+      min_vel_x: 0.0 #-1.0                             # 最小x线速度（可后退为负值）
+      min_vel_y: 0.0                                   
+      max_vel_x: 0.3 #1.0                              # 最大x线速度0.5m/s
+      max_vel_y: 0.0
+      max_vel_theta: 1.0 #1.5                          # 最大角速度1.5rad/s
+      min_speed_xy: 0.0
+      max_speed_xy: 0.5 #1.0
+      min_speed_theta: 0.0
+      # Add high threshold velocity for turtlebot 3 issue.
+      # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
+      acc_lim_x: 0.5                                   # x线加速度限制0.5m/s²
+      acc_lim_y: 0.0                    
+      acc_lim_theta: 1.0 #1.0                          # 角加速度限制3.0rad/s²
+      decel_lim_x: -0.5                                # x线减速度限制-0.5m/s²
+      decel_lim_y: 0.0
+      decel_lim_theta: -3.0 #-1.0
+      # 采样参数
+      vx_samples: 20                                   # x速度采样数20个
+      vy_samples: 5
+      vtheta_samples: 20                               # 角速度采样数20个
+      sim_time: 2.5 # 1.7                              # 轨迹前向模拟时间2.5s
+      linear_granularity: 0.05                         # 离散化参数，线性粒度0.05m， 调小：轨迹平滑，但计算量增加
+      angular_granularity: 0.025                       # 离散化参数，角度粒度0.025rad，调小：旋转控制更精确流畅，但计算量增加
+      # 其他参数
+      transform_tolerance: 0.2 #0.2                    # 变换容差0.2s， 调大：对TF延迟更宽容，但可能使用过时的坐标变换； 调小：要求更实时的TF数据，但可能因短暂延迟而失败
+      xy_goal_tolerance: 0.2 #0.25                     # 目标位置容差0.2m
+      trans_stopped_velocity: 0.25                     # 停止判断速度阈值0.25m/s，调大：更容易判断为停止，但可能误判低速移动为停止；调小：更难判断为停止，但停止判断可能延迟；
+      short_circuit_trajectory_evaluation: True
+      stateful: True
+      # 轨迹评价器 (Critics)
+      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+      # critics: ["Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+        # 障碍物避让
+      BaseObstacle.scale: 0.2 #0.04                    # 基础障碍物代价权重0.2
+        # 路径对齐
+      PathAlign.scale: 150.0  #50.0 100.0              # 路径对齐权重150.0
+      PathAlign.forward_point_distance: 0.1            # 前视点距离0.1m， 调大：更前瞻的路径跟踪，转弯更平滑，但可能会切完； 调小：转弯更尖锐，但可能抖动
+        # 目标对齐
+      GoalAlign.scale: 20.0 #10.0                      # 目标对齐权重20.0
+      GoalAlign.forward_point_distance: 0.1            # 前视点距离0.1m， 调大：提前开始对准目标，最终朝向更准确； 调小：接近目标时才对准，可能最终朝向偏差较大
+         # 距离代价
+      PathDist.scale: 100.0 #50.0 80.0                 # 路径距离权重100.0
+      GoalDist.scale: 10.0                             # 目标距离权重10.0
+        # 目标旋转
+      RotateToGoal.scale: 32.0                         # 旋转到目标权重32.0
+      RotateToGoal.slowing_factor: 5.0                 # 减速因子5.0
+      RotateToGoal.lookahead_time: -1.0                # 前视时间-1.0（禁用），禁用(-1):使用 GoalAlign.forward_point_distance: 0.1 的固定距离,在距离目标0.1米处开始旋转对准; 启用(正值):前视距离 = 当前速度 × lookahead_time
+      allow_rotating_to_goal: True                     #开启/关闭到达目标后的旋转
 
-      # Add goal tolerance parameters for TEB
-      xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.4
-      free_goal_vel: False
-      complete_global_plan: True
+# controller_server:
+#   ros__parameters:
+#     odom_topic: /camera_init
+#     use_sim_time: True
+#     controller_frequency: 5.0
+#     controller_plugin_types: ["teb_local_planner::TebLocalPlannerROS"]
+#     controller_plugins: ["FollowPath"]
 
-      teb_autosize: 1.0
-      dt_ref: 0.3
-      dt_hysteresis: 0.1
-      max_samples: 500
-      global_plan_overwrite_orientation: False
-      allow_init_with_backwards_motion: False
-      max_global_plan_lookahead_dist: 3.0
-      global_plan_viapoint_sep: 0.3
-      global_plan_prune_distance: 1.0
-      exact_arc_length: False
-      feasibility_check_no_poses: 2
-      publish_feedback: False
+#     # Add goal checker configuration for TEB planner
+#     goal_checker_plugins: ["general_goal_checker"]
+#     progress_checker_plugin: "progress_checker"
+    
+#     # Progress checker parameters
+#     progress_checker:
+#       plugin: "nav2_controller::SimpleProgressChecker"
+#       required_movement_radius: 0.3
+#       movement_time_allowance: 10.0
+    
+#     # Goal checker parameters
+#     general_goal_checker:
+#       plugin: "nav2_controller::SimpleGoalChecker"
+#       xy_goal_tolerance: 0.25
+#       yaw_goal_tolerance: 0.4
+#       stateful: True
+
+#     FollowPath:
+#       plugin: teb_local_planner::TebLocalPlannerROS
+
+#       # Add goal tolerance parameters for TEB
+#       xy_goal_tolerance: 0.25
+#       yaw_goal_tolerance: 0.4
+#       free_goal_vel: False
+#       complete_global_plan: True
+
+#       teb_autosize: 1.0
+#       dt_ref: 0.3
+#       dt_hysteresis: 0.1
+#       max_samples: 500
+#       global_plan_overwrite_orientation: False
+#       allow_init_with_backwards_motion: False
+#       max_global_plan_lookahead_dist: 3.0
+#       global_plan_viapoint_sep: 0.3
+#       global_plan_prune_distance: 1.0
+#       exact_arc_length: False
+#       feasibility_check_no_poses: 2
+#       publish_feedback: False
           
-      # Robot
-      min_vel_x: 0.0        
-      max_vel_x: 1.0
-      max_vel_theta: 1.0 
-      acc_lim_x: 2.5
-      acc_lim_theta: 3.2
+#       # Robot
+#       min_vel_x: 0.0        
+#       max_vel_x: 0.3
+#       max_vel_theta: 0.5 
+#       acc_lim_x: 1.0
+#       acc_lim_theta: 1.5
 
-      footprint_model: # types: "point", "circular", "two_circles", "line", "polygon"
-        type: "polygon"
-        # radius: 0.20 # for type "circular"
-        vertices: "[-0.36, -0.25], [-0.36, 0.25], [0.36, 0.25], [0.36, -0.25]"
+#       footprint_model: # types: "point", "circular", "two_circles", "line", "polygon"
+#         type: "polygon"
+#         # radius: 0.20 # for type "circular"
+#         vertices: "[-0.36, -0.25], [-0.36, 0.25], [0.36, 0.25], [0.36, -0.25]"
 
-      # # GoalTolerance
-      # free_goal_vel: False
+#       # # GoalTolerance
+#       # free_goal_vel: False
           
-      # Obstacles
-      min_obstacle_dist: 0.3
-      inflation_dist: 0.5
-      include_costmap_obstacles: True
-      costmap_obstacles_behind_robot_dist: 1.0
-      obstacle_poses_affected: 15
+#       # Obstacles
+#       min_obstacle_dist: 0.3
+#       inflation_dist: 0.5
+#       include_costmap_obstacles: True
+#       costmap_obstacles_behind_robot_dist: 1.0
+#       obstacle_poses_affected: 15
 
-      dynamic_obstacle_inflation_dist: 0.5
-      include_dynamic_obstacles: True 
+#       dynamic_obstacle_inflation_dist: 0.5
+#       include_dynamic_obstacles: True 
 
-      costmap_converter_plugin: "costmap_converter::CostmapToPolygonsDBSMCCH"
-      costmap_converter_spin_thread: True
-      costmap_converter_rate: 5
+#       costmap_converter_plugin: "costmap_converter::CostmapToPolygonsDBSMCCH"
+#       costmap_converter_spin_thread: True
+#       costmap_converter_rate: 5
 
-      # Optimization
-      no_inner_iterations: 3
-      no_outer_iterations: 2
-      optimization_activate: True
-      optimization_verbose: False
-      penalty_epsilon: 0.1
-      obstacle_cost_exponent: 4.0
-      weight_max_vel_x: 0.5
-      weight_max_vel_theta: 0.5
-      weight_acc_lim_x: 0.5
-      weight_acc_lim_theta: 10.5
-      weight_kinematics_nh: 1000.0
-      weight_kinematics_forward_drive: 3.0
-      weight_kinematics_turning_radius: 1.0
-      weight_optimaltime: 1.0 # must be > 0
-      weight_shortest_path: 0.0
-      weight_obstacle: 50.0
-      weight_inflation: 0.2
-      weight_dynamic_obstacle: 10.0 # not in use yet
-      weight_dynamic_obstacle_inflation: 0.2
-      weight_viapoint: 50.0
-      weight_adapt_factor: 2.0
+#       # Optimization
+#       no_inner_iterations: 3
+#       no_outer_iterations: 2
+#       optimization_activate: True
+#       optimization_verbose: False
+#       penalty_epsilon: 0.1
+#       obstacle_cost_exponent: 4.0
+#       weight_max_vel_x: 1.0 # Increased from 0.5 to penalize high speeds more
+#       weight_max_vel_theta: 1.0 # Increased from 0.5 to penalize high angular speeds more
+#       weight_acc_lim_x: 0.5
+#       weight_acc_lim_theta: 10.5
+#       weight_kinematics_nh: 1000.0
+#       weight_kinematics_forward_drive: 3.0
+#       weight_kinematics_turning_radius: 1.0
+#       weight_optimaltime: 1.0 # must be > 0
+#       weight_shortest_path: 0.0
+#       weight_obstacle: 50.0
+#       weight_inflation: 0.2
+#       weight_dynamic_obstacle: 10.0 # not in use yet
+#       weight_dynamic_obstacle_inflation: 0.2
+#       weight_viapoint: 50.0
+#       weight_adapt_factor: 2.0
 
-      # Homotopy Class Planner
-      enable_homotopy_class_planning: True
-      enable_multithreading: False # Disabled for stability
-      max_number_classes: 2
-      selection_cost_hysteresis: 5.0
-      selection_prefer_initial_plan: 1.0
-      selection_obst_cost_scale: 1.0
-      selection_alternative_time_cost: True
+#       # Homotopy Class Planner
+#       enable_homotopy_class_planning: True
+#       enable_multithreading: False # Disabled for stability
+#       max_number_classes: 2
+#       selection_cost_hysteresis: 5.0
+#       selection_prefer_initial_plan: 1.0
+#       selection_obst_cost_scale: 1.0
+#       selection_alternative_time_cost: True
 
-      roadmap_graph_no_samples: 10
-      roadmap_graph_area_width: 5.0
-      roadmap_graph_area_length_scale: 1.0
-      h_signature_prescaler: 0.5
-      h_signature_threshold: 0.1
-      obstacle_heading_threshold: 0.45
-      switching_blocking_period: 0.0
-      viapoints_all_candidates: True
-      delete_detours_backwards: True
-      max_ratio_detours_duration_best_duration: 3.0
-      visualize_hc_graph: False
-      visualize_with_time_as_z_axis_scale: 0.0
+#       roadmap_graph_no_samples: 10
+#       roadmap_graph_area_width: 5.0
+#       roadmap_graph_area_length_scale: 1.0
+#       h_signature_prescaler: 0.5
+#       h_signature_threshold: 0.1
+#       obstacle_heading_threshold: 0.45
+#       switching_blocking_period: 0.0
+#       viapoints_all_candidates: True
+#       delete_detours_backwards: True
+#       max_ratio_detours_duration_best_duration: 3.0
+#       visualize_hc_graph: False
+#       visualize_with_time_as_z_axis_scale: 0.0
 
-      # Recovery
-      shrink_horizon_backup: True
-      shrink_horizon_min_duration: 10.0
-      oscillation_recovery: True
-      oscillation_v_eps: 0.1
-      oscillation_omega_eps: 0.1
-      oscillation_recovery_min_duration: 10.0
-      oscillation_filter_duration: 10.0
+#       # Recovery
+#       shrink_horizon_backup: True
+#       shrink_horizon_min_duration: 10.0
+#       oscillation_recovery: True
+#       oscillation_v_eps: 0.1
+#       oscillation_omega_eps: 0.1
+#       oscillation_recovery_min_duration: 10.0
+#       oscillation_filter_duration: 10.0
 
 controller_server_rclcpp_node:
   ros__parameters:
@@ -317,7 +317,7 @@ local_costmap:
           data_type: "PointCloud2"           # 数据类型
           raytrace_max_range: 4.0            # 光线追踪最大范围4m  （调大能更好的清除远处障碍物，增加计算开销；调小减少计算量，减小远处传感器噪声影响）
           raytrace_min_range: 0.05           # 光线追踪最小范围0.05m (调大能更好的减少近处噪声，但近处障碍物清除能力下降；调小能够更精确的近处障碍物处理，增加计算开销）
-          obstacle_max_range: 3.0            # 障碍物检测最大范围3m(距离机器人)
+          obstacle_max_range: 4.0            # 障碍物检测最大范围4m(距离机器人)
           obstacle_min_range: 0.01           # 障碍物检测最小范围0.01m(距离机器人)
 
       always_send_full_costmap: True
