@@ -68,7 +68,7 @@ controller_server:
     use_sim_time: False
     controller_frequency: 10.0 #20.0                    # 控制器频率10Hz
     min_x_velocity_threshold: 0.001                     # x方向最小速度阈值   
-    min_y_velocity_threshold: 0.5                       # y方向最小速度阈值（侧向移动）, 差速机器人没有y轴方向的移动
+    min_y_velocity_threshold: 0.001                     # y方向最小速度阈值（侧向移动）, 差速机器人没有y轴方向的移动. 4wd-4ws有y轴方向移动
     min_theta_velocity_threshold: 0.001                 # 角速度最小阈值
     failure_tolerance: 0.3
     progress_checker_plugin: "progress_checker"         # 进度检查器插件
@@ -90,16 +90,16 @@ controller_server:
     general_goal_checker:
       stateful: True                                   # True:需要持续满足条件才确认到达,避免因短暂位置波动造成的误判
       plugin: "nav2_controller::SimpleGoalChecker"     # 简单目标检查器
-      xy_goal_tolerance: 0.2 #0.25                     # xy位置容差0.2m
-      yaw_goal_tolerance: 0.4 #0.4                     # 朝向容差0.4弧度（约23度）
+      xy_goal_tolerance: 0.35 #0.25                     # xy位置容差0.2m
+      yaw_goal_tolerance: 0.3 #0.4                     # 朝向容差0.4弧度（约23度）
     # DWB parameters
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"              # DWB局部规划器插件
       debug_trajectory_details: True                   # 调试轨迹详情
-      min_vel_x: 0.0 #-1.0                             # 最小x线速度（可后退为负值）
-      min_vel_y: 0.0                                   
+      min_vel_x: -0.1 #-1.0                             # 最小x线速度（可后退为负值）
+      min_vel_y: -0.1                                   # 允许负向侧移
       max_vel_x: 0.3 #1.0                              # 最大x线速度0.5m/s
-      max_vel_y: 0.0
+      max_vel_y: 0.2                                   # 增加侧向移动速度限制
       max_vel_theta: 1.0 #1.5                          # 最大角速度1.5rad/s
       min_speed_xy: 0.0
       max_speed_xy: 0.5 #1.0
@@ -107,41 +107,41 @@ controller_server:
       # Add high threshold velocity for turtlebot 3 issue.
       # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
       acc_lim_x: 0.5                                   # x线加速度限制0.5m/s²
-      acc_lim_y: 0.0                    
+      acc_lim_y: 0.3                                   # 增加y方向加速度限制                   
       acc_lim_theta: 1.0 #1.0                          # 角加速度限制3.0rad/s²
       decel_lim_x: -0.5                                # x线减速度限制-0.5m/s²
-      decel_lim_y: 0.0
+      decel_lim_y: -0.3                                # 增加y方向减速度限制
       decel_lim_theta: -3.0 #-1.0
-      # 采样参数
+      # 采样参数 - 增加y方向采样
       vx_samples: 20                                   # x速度采样数20个
-      vy_samples: 5
+      vy_samples: 15                                   # 增加y速度采样数
       vtheta_samples: 20                               # 角速度采样数20个
       sim_time: 2.5 # 1.7                              # 轨迹前向模拟时间2.5s
-      linear_granularity: 0.05                         # 离散化参数，线性粒度0.05m， 调小：轨迹平滑，但计算量增加
-      angular_granularity: 0.025                       # 离散化参数，角度粒度0.025rad，调小：旋转控制更精确流畅，但计算量增加
+      linear_granularity: 0.03                         # 离散化参数，线性粒度0.05m， 调小：轨迹平滑，但计算量增加
+      angular_granularity: 0.02                       # 离散化参数，角度粒度0.02rad，调小：旋转控制更精确流畅，但计算量增加
       # 其他参数
       transform_tolerance: 0.2 #0.2                    # 变换容差0.2s， 调大：对TF延迟更宽容，但可能使用过时的坐标变换； 调小：要求更实时的TF数据，但可能因短暂延迟而失败
-      xy_goal_tolerance: 0.2 #0.25                     # 目标位置容差0.2m
-      trans_stopped_velocity: 0.25                     # 停止判断速度阈值0.25m/s，调大：更容易判断为停止，但可能误判低速移动为停止；调小：更难判断为停止，但停止判断可能延迟；
+      xy_goal_tolerance: 0.25 #0.25                     # 目标位置容差0.2m
+      trans_stopped_velocity: 0.15                     # 停止判断速度阈值0.15m/s，调大：更容易判断为停止，但可能误判低速移动为停止；调小：更难判断为停止，但停止判断可能延迟；
       short_circuit_trajectory_evaluation: True
       stateful: True
       # 轨迹评价器 (Critics)
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
       # critics: ["Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-        # 障碍物避让
+      # 障碍物避让
       BaseObstacle.scale: 0.2 #0.04                    # 基础障碍物代价权重0.2
-        # 路径对齐
+      # 路径对齐 - 调整权重以支持侧向移动
       PathAlign.scale: 150.0  #50.0 100.0              # 路径对齐权重150.0
-      PathAlign.forward_point_distance: 0.1            # 前视点距离0.1m， 调大：更前瞻的路径跟踪，转弯更平滑，但可能会切完； 调小：转弯更尖锐，但可能抖动
-        # 目标对齐
-      GoalAlign.scale: 20.0 #10.0                      # 目标对齐权重20.0
-      GoalAlign.forward_point_distance: 0.1            # 前视点距离0.1m， 调大：提前开始对准目标，最终朝向更准确； 调小：接近目标时才对准，可能最终朝向偏差较大
-         # 距离代价
+      PathAlign.forward_point_distance: 0.2            # 前视点距离0.1m， 调大：更前瞻的路径跟踪，转弯更平滑，但可能会切完； 调小：转弯更尖锐，但可能抖动
+      # 目标对齐
+      GoalAlign.scale: 15.0 #10.0                      # 目标对齐权重15.0
+      GoalAlign.forward_point_distance: 0.15            # 前视点距离0.15m， 调大：提前开始对准目标，最终朝向更准确； 调小：接近目标时才对准，可能最终朝向偏差较大
+      # 距离代价
       PathDist.scale: 100.0 #50.0 80.0                 # 路径距离权重100.0
       GoalDist.scale: 10.0                             # 目标距离权重10.0
-        # 目标旋转
-      RotateToGoal.scale: 32.0                         # 旋转到目标权重32.0
-      RotateToGoal.slowing_factor: 5.0                 # 减速因子5.0
+      # 目标旋转
+      RotateToGoal.scale: 25.0                         # 旋转到目标权重32.0
+      RotateToGoal.slowing_factor: 3.0                 # 减速因子5.0
       RotateToGoal.lookahead_time: -1.0                # 前视时间-1.0（禁用），禁用(-1):使用 GoalAlign.forward_point_distance: 0.1 的固定距离,在距离目标0.1米处开始旋转对准; 启用(正值):前视距离 = 当前速度 × lookahead_time
       allow_rotating_to_goal: True                     #开启/关闭到达目标后的旋转
 
@@ -282,14 +282,14 @@ controller_server_rclcpp_node:
 local_costmap:
   local_costmap:
     ros__parameters:
-      update_frequency: 10.0           # 更新频率20Hz（高频更新，用于实时避障）
+      update_frequency: 15.0           # 更新频率20Hz（高频更新，用于实时避障）
       publish_frequency: 5.0
       global_frame: map #odom_combined      # 全局坐标系（里程计融合坐标系）
       robot_base_frame: base_footprint # 机器人基座坐标系
       use_sim_time: False
       rolling_window: true   # 使用滚动窗口模式（local_costmap地图随机器人移动）
-      width: 4               # local_costmap地图宽度3米
-      height: 4              # local_costmap地图高度3米
+      width: 5               # local_costmap地图宽度5米
+      height: 5              # local_costmap地图高度5米
       resolution: 0.05       # 分辨率0.05m/像素
       # robot_radius: 0.3      # 机器人半径0.3m（用于圆形机器人模型）
       footprint: "[ [-0.36, -0.25], [-0.36, 0.25], [0.36, 0.25], [0.36, -0.25] ]"
@@ -315,9 +315,9 @@ local_costmap:
           clearing: True                     # 启用障碍物清除, 设置True：当传感器检测到之前标记为障碍物的区域现在为空闲时，清除该区域的障碍物标记。
           marking: True                      # 启用障碍物标记，设置True：当传感器检测到障碍物时，在代价地图中标记相应区域。
           data_type: "PointCloud2"           # 数据类型
-          raytrace_max_range: 4.0            # 光线追踪最大范围4m  （调大能更好的清除远处障碍物，增加计算开销；调小减少计算量，减小远处传感器噪声影响）
+          raytrace_max_range: 5.0            # 光线追踪最大范围4m  （调大能更好的清除远处障碍物，增加计算开销；调小减少计算量，减小远处传感器噪声影响）
           raytrace_min_range: 0.05           # 光线追踪最小范围0.05m (调大能更好的减少近处噪声，但近处障碍物清除能力下降；调小能够更精确的近处障碍物处理，增加计算开销）
-          obstacle_max_range: 4.0            # 障碍物检测最大范围4m(距离机器人)
+          obstacle_max_range: 5.0            # 障碍物检测最大范围4m(距离机器人)
           obstacle_min_range: 0.01           # 障碍物检测最小范围0.01m(距离机器人)
 
       always_send_full_costmap: True
@@ -395,10 +395,10 @@ planner_server:
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner/NavfnPlanner"
-      tolerance: 0.5
+      tolerance: 1.0                                  # 0.5 增加路径规划容差，允许更灵活的路径
       use_astar: false
       allow_unknown: true
-      cost_factor: 5.0
+      cost_factor: 3.0                                # 5.0 降低代价因子，规划更直接的路径
 
 planner_server_rclcpp_node:
   ros__parameters:
@@ -411,7 +411,7 @@ smoother_server:
     simple_smoother:
       plugin: "nav2_smoother::SimpleSmoother"
       tolerance: 1.0e-10
-      max_its: 1000
+      max_its: 1500                                   # 1000 增加最大迭代次数，获得更平滑路径
       do_refinement: True
 
 behavior_server:
@@ -433,9 +433,9 @@ behavior_server:
     transform_tolerance: 0.2
     use_sim_time: False
     simulate_ahead_time: 2.0
-    max_rotational_vel: 0.7
-    min_rotational_vel: 0.3
-    rotational_acc_lim: 0.3
+    max_rotational_vel: 1.5  #0.7
+    min_rotational_vel: 0.1  #0.3
+    rotational_acc_lim: 0.5  #0.3
 
 robot_state_publisher:
   ros__parameters:
