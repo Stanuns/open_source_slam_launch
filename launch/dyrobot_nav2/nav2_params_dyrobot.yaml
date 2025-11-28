@@ -96,10 +96,10 @@ controller_server:
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"              # DWB局部规划器插件
       debug_trajectory_details: True                   # 调试轨迹详情
-      min_vel_x: -0.1 #-1.0                             # 最小x线速度（可后退为负值）
-      min_vel_y: -0.1                                   # 允许负向侧移
+      min_vel_x: 0.0 #-1.0                             # 最小x线速度（可后退为负值）
+      min_vel_y: 0.0                                   # 允许负向侧移
       max_vel_x: 0.3 #1.0                              # 最大x线速度0.5m/s
-      max_vel_y: 0.2                                   # 增加侧向移动速度限制
+      max_vel_y: 0.0                                   # 增加侧向移动速度限制
       max_vel_theta: 1.0 #1.5                          # 最大角速度1.5rad/s
       min_speed_xy: 0.0
       max_speed_xy: 0.5 #1.0
@@ -107,14 +107,14 @@ controller_server:
       # Add high threshold velocity for turtlebot 3 issue.
       # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
       acc_lim_x: 0.5                                   # x线加速度限制0.5m/s²
-      acc_lim_y: 0.3                                   # 增加y方向加速度限制                   
+      acc_lim_y: 0.0                                   # 增加y方向加速度限制                   
       acc_lim_theta: 1.0 #1.0                          # 角加速度限制3.0rad/s²
       decel_lim_x: -0.5                                # x线减速度限制-0.5m/s²
-      decel_lim_y: -0.3                                # 增加y方向减速度限制
+      decel_lim_y: 0.0                                # 增加y方向减速度限制
       decel_lim_theta: -3.0 #-1.0
       # 采样参数 - 增加y方向采样
       vx_samples: 20                                   # x速度采样数20个
-      vy_samples: 15                                   # 增加y速度采样数
+      vy_samples: 0                                   # 增加y速度采样数
       vtheta_samples: 20                               # 角速度采样数20个
       sim_time: 2.5 # 1.7                              # 轨迹前向模拟时间2.5s
       linear_granularity: 0.03                         # 离散化参数，线性粒度0.05m， 调小：轨迹平滑，但计算量增加
@@ -140,8 +140,8 @@ controller_server:
       PathDist.scale: 100.0 #50.0 80.0                 # 路径距离权重100.0
       GoalDist.scale: 10.0                             # 目标距离权重10.0
       # 目标旋转
-      RotateToGoal.scale: 25.0                         # 旋转到目标权重32.0
-      RotateToGoal.slowing_factor: 3.0                 # 减速因子5.0
+      RotateToGoal.scale: 32.0                         # 旋转到目标权重32.0
+      RotateToGoal.slowing_factor: 5.0                 # 减速因子5.0
       RotateToGoal.lookahead_time: -1.0                # 前视时间-1.0（禁用），禁用(-1):使用 GoalAlign.forward_point_distance: 0.1 的固定距离,在距离目标0.1米处开始旋转对准; 启用(正值):前视距离 = 当前速度 × lookahead_time
       allow_rotating_to_goal: True                     #开启/关闭到达目标后的旋转
 
