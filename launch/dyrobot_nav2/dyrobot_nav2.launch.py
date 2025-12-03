@@ -106,26 +106,26 @@ def generate_launch_description():
             arguments=['--ros-args', '--log-level', 'info'],
             remappings=[('/tf', 'tf'),('/tf_static', 'tf_static')]
         ),
-        # Node(
-        #     package='nav2_amcl',
-        #     executable='amcl',
-        #     name='amcl',
-        #     output='screen',
-        #     respawn=True,
-        #     respawn_delay=2.0,
-        #     parameters=[ParameterFile(
-        #         RewrittenYaml(
-        #             source_file=nav2_param_dir,
-        #             root_key='',
-        #             param_rewrites={
-        #                 'use_sim_time': use_sim_time,
-        #                 'yaml_filename': LaunchConfiguration('map')
-        #             },
-        #             convert_types=True),
-        #         allow_substs=True)],
-        #     arguments=['--ros-args', '--log-level', 'info'],
-        #     remappings=[('/tf', 'tf'),('/tf_static', 'tf_static')]
-        # ),
+        ## Node(
+        ##     package='nav2_amcl',
+        ##     executable='amcl',
+        ##     name='amcl',
+        ##     output='screen',
+        ##     respawn=True,
+        ##     respawn_delay=2.0,
+        ##     parameters=[ParameterFile(
+        ##         RewrittenYaml(
+        ##             source_file=nav2_param_dir,
+        ##             root_key='',
+        ##             param_rewrites={
+        ##                 'use_sim_time': use_sim_time,
+        ##                 'yaml_filename': LaunchConfiguration('map')
+        ##             },
+        ##             convert_types=True),
+        ##         allow_substs=True)],
+        ##     arguments=['--ros-args', '--log-level', 'info'],
+        ##     remappings=[('/tf', 'tf'),('/tf_static', 'tf_static')]
+        ## ),
         Node(
             package='nav2_lifecycle_manager',
             executable='lifecycle_manager',

@@ -297,7 +297,7 @@ local_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer" # 膨胀图层插件
         cost_scaling_factor: 3.0 # 3.0 10.0       # 代价缩放因子3.0（控制代价衰减速度),这个值越大，安全区域越小，越靠近障碍物行驶
-        inflation_radius: 0.45   # 0.25 0.5       # local_costmap膨胀半径0.35m
+        inflation_radius: 0.25   # 0.25 0.5       # local_costmap膨胀半径0.35m
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer" # 3D体素图层插件
         enabled: True
