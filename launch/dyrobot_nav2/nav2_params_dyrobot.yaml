@@ -287,6 +287,7 @@ local_costmap:
       global_frame: map #odom_combined      # 全局坐标系（里程计融合坐标系）
       robot_base_frame: base_footprint # 机器人基座坐标系
       use_sim_time: False
+      transform_tolerance: 0.5          # 增加变换容差到1.0秒，解决时间戳问题
       rolling_window: true   # 使用滚动窗口模式（local_costmap地图随机器人移动）
       width: 5               # local_costmap地图宽度5米
       height: 5              # local_costmap地图高度5米
@@ -307,7 +308,7 @@ local_costmap:
         z_voxels: 16                          # Z轴体素数（16×0.05=0.8m高度）
         max_obstacle_height: 2.0              # 最大障碍物高度2.0m
         mark_threshold: 1                     # 标记阈值（1个体素即视为障碍物)
-        observation_sources: pointcloud       # **使用mid-360数据/pointcloud进行避障**
+        observation_sources: pointcloud      # **使用mid-360数据/livox/lidar/pointcloud进行避障**
         pointcloud:
           topic: /livox/lidar/pointcloud     # mid-360点云数据topic
           max_obstacle_height: 1.5           # 最大障碍物高度1.5m
@@ -319,6 +320,21 @@ local_costmap:
           raytrace_min_range: 0.05           # 光线追踪最小范围0.05m (调大能更好的减少近处噪声，但近处障碍物清除能力下降；调小能够更精确的近处障碍物处理，增加计算开销）
           obstacle_max_range: 5.0            # 障碍物检测最大范围4m(距离机器人)
           obstacle_min_range: 0.01           # 障碍物检测最小范围0.01m(距离机器人)
+          observation_persistence: 0.0        # 保持为0，实时更新
+        scan:
+          topic: /livox/lidar/scan            # mid-360点云数据按照限定的视场角转换成laserscan topic
+          max_obstacle_height: 1.0            # 最大障碍物高度
+          clearing: True                      # 启用障碍物清除，设置True：当传感器检测到之前标记为障碍物的区域现在为空闲时，清除该区域的障碍物标记。
+          marking: True                       # 启用障碍物标记，设置True：当传感器检测到障碍物时，在代价地图中标记相应区域。
+          data_type: "LaserScan"              # 数据类型
+          raytrace_max_range: 5.0 #10.0      # 光线追踪最大范围10m （调大能更好的清除远处障碍物，增加计算开销；调小减少计算量，减小远处传感器噪声影响）
+          raytrace_min_range: 0.05             # 光线追踪最小范围0.2m （调大能更好的减少近处噪声，但近处障碍物清除能力下降；调小能够更精确的近处障碍物处理，增加计算开销）
+          obstacle_max_range: 5.0             # 障碍物检测最大范围2.5m(距离机器人)
+          obstacle_min_range: 0.01            # 障碍物检测最小范围0.05m(距离机器人)
+           # 增加消息过滤器参数，解决时间戳问题
+          # observation_persistence: 0.0        # 保持为0，实时更新
+          # expected_update_rate: 0.0           # 0表示不检查更新率
+          # transform_tolerance: 1.0            # 增加变换容差到1.0秒
 
       always_send_full_costmap: True
   local_costmap_client:
@@ -336,6 +352,7 @@ global_costmap:
       global_frame: map
       robot_base_frame: base_footprint
       use_sim_time: False
+      transform_tolerance: 0.5                # 增加变换容差到1.0秒，解决时间戳问题
       # robot_radius: 0.3                       # 机器人半径0.3m（用于圆形机器人模型）
       footprint: "[ [-0.36, -0.25], [-0.36, 0.25], [0.36, 0.25], [0.36, -0.25] ]"
       resolution: 0.05
@@ -345,7 +362,7 @@ global_costmap:
         mark_threshold: 1
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        observation_sources: pointcloud       # **使用mid-360数据/pointcloud进行避障**
+        observation_sources: pointcloud      # **使用mid-360数据/livox/lidar/pointcloud进行避障**
         pointcloud:
           topic: /livox/lidar/pointcloud     # mid-360点云数据topic
           max_obstacle_height: 1.5          
@@ -358,6 +375,22 @@ global_costmap:
           obstacle_max_range: 3.0
           obstacle_min_range: 0.01
           observation_persistence: 0.0     #障碍物持久性，0.0：实时性最好，但对传感器噪声更敏感；调大对短暂障碍物更鲁棒，减少障碍物闪烁，缺点是致已移动障碍物的残留
+        scan:
+          topic: /livox/lidar/scan         # mid-360点云数据按照限定的视场角转换成laserscan topic
+          max_obstacle_height: 1.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+          raytrace_max_range: 10.0
+          raytrace_min_range: 0.1
+          obstacle_max_range: 3.0
+          obstacle_min_range: 0.01
+          # 增加消息过滤器参数，解决时间戳问题
+          # observation_persistence: 0.0      #障碍物持久性，0.0：实时性最好，但对传感器噪声更敏感；调大对短暂障碍物更鲁棒，减少障碍物闪烁，缺点是致已移动障碍物的残留
+          # expected_update_rate: 0.0         # 0表示不检查更新率
+          # transform_tolerance: 1.0          # 增加变换容差到1.0秒
+
+
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"      # 静态地图图层
         map_subscribe_transient_local: True         
