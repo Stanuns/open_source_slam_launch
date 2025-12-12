@@ -98,24 +98,24 @@ controller_server:
       debug_trajectory_details: True                   # 调试轨迹详情
       min_vel_x: 0.0 #-1.0                             # 最小x线速度（可后退为负值）
       min_vel_y: 0.0                                   # 允许负向侧移
-      max_vel_x: 0.3 #1.0                              # 最大x线速度0.5m/s
+      max_vel_x: 0.6 #1.0                              # 最大x线速度0.5m/s
       max_vel_y: 0.0                                   # 增加侧向移动速度限制
       max_vel_theta: 1.0 #1.5                          # 最大角速度1.5rad/s
       min_speed_xy: 0.0
-      max_speed_xy: 0.5 #1.0
+      max_speed_xy: 0.6 #1.0
       min_speed_theta: 0.0
       # Add high threshold velocity for turtlebot 3 issue.
       # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
       acc_lim_x: 0.5                                   # x线加速度限制0.5m/s²
       acc_lim_y: 0.0                                   # 增加y方向加速度限制                   
-      acc_lim_theta: 1.0 #1.0                          # 角加速度限制3.0rad/s²
-      decel_lim_x: -0.5                                # x线减速度限制-0.5m/s²
+      acc_lim_theta: 3.0 #1.0                          # 角加速度限制3.0rad/s²
+      decel_lim_x: -1.0                                # x线减速度限制-0.5m/s²
       decel_lim_y: 0.0                                # 增加y方向减速度限制
       decel_lim_theta: -3.0 #-1.0
       # 采样参数 - 增加y方向采样
-      vx_samples: 20                                   # x速度采样数20个
+      vx_samples: 25                                   # x速度采样数20个
       vy_samples: 0                                   # 增加y速度采样数
-      vtheta_samples: 20                               # 角速度采样数20个
+      vtheta_samples: 25                               # 角速度采样数20个
       sim_time: 2.5 # 1.7                              # 轨迹前向模拟时间2.5s
       linear_granularity: 0.03                         # 离散化参数，线性粒度0.05m， 调小：轨迹平滑，但计算量增加
       angular_granularity: 0.02                       # 离散化参数，角度粒度0.02rad，调小：旋转控制更精确流畅，但计算量增加
@@ -466,7 +466,7 @@ behavior_server:
     transform_tolerance: 0.2
     use_sim_time: False
     simulate_ahead_time: 2.0
-    max_rotational_vel: 1.5  #0.7
+    max_rotational_vel: 2.0  #0.7
     min_rotational_vel: 0.1  #0.3
     rotational_acc_lim: 0.5  #0.3
 
