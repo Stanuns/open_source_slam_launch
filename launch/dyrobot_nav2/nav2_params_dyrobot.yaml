@@ -284,7 +284,7 @@ local_costmap:
     ros__parameters:
       update_frequency: 15.0           # 更新频率20Hz（高频更新，用于实时避障）
       publish_frequency: 5.0
-      global_frame: map #odom_combined      # 全局坐标系（里程计融合坐标系）
+      global_frame: camera_init #odom_combined      # 全局坐标系（里程计融合坐标系）
       robot_base_frame: base_footprint # 机器人基座坐标系
       use_sim_time: False
       transform_tolerance: 0.5          # 增加变换容差到1.0秒，解决时间戳问题
