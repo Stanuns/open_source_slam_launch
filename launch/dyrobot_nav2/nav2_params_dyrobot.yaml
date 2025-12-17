@@ -307,7 +307,9 @@ local_costmap:
         z_resolution: 0.05                    # Z轴分辨率0.05m
         z_voxels: 16                          # Z轴体素数（16×0.05=0.8m高度）
         max_obstacle_height: 2.0              # 最大障碍物高度2.0m
+        combination_method: 1            # 允许融合并清除
         mark_threshold: 1                     # 标记阈值（1个体素即视为障碍物)
+
         observation_sources: pointcloud      # **使用mid-360数据/livox/lidar/pointcloud进行避障**
         pointcloud:
           topic: /livox/lidar/pointcloud     # mid-360点云数据topic
