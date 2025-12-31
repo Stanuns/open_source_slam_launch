@@ -445,9 +445,9 @@ local_costmap:
         combination_method: 1            # 允许融合并清除
         mark_threshold: 1                     # 标记阈值（1个体素即视为障碍物)
 
-        observation_sources: pointcloud      # **使用mid-360数据/livox/lidar/pointcloud进行避障**
-        pointcloud:
-          topic: /livox/lidar/pointcloud     # mid-360点云数据topic
+        observation_sources: pointcloud_1  pointcloud_2    # **使用mid-360数据/livox/lidar/pointcloud进行避障**
+        pointcloud_1:
+          topic: /livox/lidar_192_168_1_111/pointcloud     # mid-360点云数据topic
           max_obstacle_height: 1.5           # 最大障碍物高度1.5m
           min_obstacle_height: 0.32          # 最小障碍物高度0.12m（过滤地面，由于点云误差设置成0.12m）
           clearing: True                     # 启用障碍物清除, 设置True：当传感器检测到之前标记为障碍物的区域现在为空闲时，清除该区域的障碍物标记。
@@ -458,20 +458,32 @@ local_costmap:
           obstacle_max_range: 5.0            # 障碍物检测最大范围4m(距离机器人)
           obstacle_min_range: 0.01           # 障碍物检测最小范围0.01m(距离机器人)
           observation_persistence: 0.0        # 保持为0，实时更新
-        scan:
-          topic: /livox/lidar/scan            # mid-360点云数据按照限定的视场角转换成laserscan topic
-          max_obstacle_height: 1.0            # 最大障碍物高度
-          clearing: True                      # 启用障碍物清除，设置True：当传感器检测到之前标记为障碍物的区域现在为空闲时，清除该区域的障碍物标记。
-          marking: True                       # 启用障碍物标记，设置True：当传感器检测到障碍物时，在代价地图中标记相应区域。
-          data_type: "LaserScan"              # 数据类型
-          raytrace_max_range: 5.0 #10.0      # 光线追踪最大范围10m （调大能更好的清除远处障碍物，增加计算开销；调小减少计算量，减小远处传感器噪声影响）
-          raytrace_min_range: 0.05             # 光线追踪最小范围0.2m （调大能更好的减少近处噪声，但近处障碍物清除能力下降；调小能够更精确的近处障碍物处理，增加计算开销）
-          obstacle_max_range: 5.0             # 障碍物检测最大范围2.5m(距离机器人)
-          obstacle_min_range: 0.01            # 障碍物检测最小范围0.05m(距离机器人)
-           # 增加消息过滤器参数，解决时间戳问题
-          # observation_persistence: 0.0        # 保持为0，实时更新
-          # expected_update_rate: 0.0           # 0表示不检查更新率
-          # transform_tolerance: 1.0            # 增加变换容差到1.0秒
+        pointcloud_2:
+          topic: /livox/lidar_192_168_1_140/pointcloud     # mid-360点云数据topic
+          max_obstacle_height: 1.5           # 最大障碍物高度1.5m
+          min_obstacle_height: 0.32          # 最小障碍物高度0.12m（过滤地面，由于点云误差设置成0.12m）
+          clearing: True                     # 启用障碍物清除, 设置True：当传感器检测到之前标记为障碍物的区域现在为空闲时，清除该区域的障碍物标记。
+          marking: True                      # 启用障碍物标记，设置True：当传感器检测到障碍物时，在代价地图中标记相应区域。
+          data_type: "PointCloud2"           # 数据类型
+          raytrace_max_range: 5.0            # 光线追踪最大范围4m  （调大能更好的清除远处障碍物，增加计算开销；调小减少计算量，减小远处传感器噪声影响）
+          raytrace_min_range: 0.05           # 光线追踪最小范围0.05m (调大能更好的减少近处噪声，但近处障碍物清除能力下降；调小能够更精确的近处障碍物处理，增加计算开销）
+          obstacle_max_range: 5.0            # 障碍物检测最大范围4m(距离机器人)
+          obstacle_min_range: 0.01           # 障碍物检测最小范围0.01m(距离机器人)
+          observation_persistence: 0.0        # 保持为0，实时更新
+        # scan:
+        #   topic: /livox/lidar/scan            # mid-360点云数据按照限定的视场角转换成laserscan topic
+        #   max_obstacle_height: 1.0            # 最大障碍物高度
+        #   clearing: True                      # 启用障碍物清除，设置True：当传感器检测到之前标记为障碍物的区域现在为空闲时，清除该区域的障碍物标记。
+        #   marking: True                       # 启用障碍物标记，设置True：当传感器检测到障碍物时，在代价地图中标记相应区域。
+        #   data_type: "LaserScan"              # 数据类型
+        #   raytrace_max_range: 5.0 #10.0      # 光线追踪最大范围10m （调大能更好的清除远处障碍物，增加计算开销；调小减少计算量，减小远处传感器噪声影响）
+        #   raytrace_min_range: 0.05             # 光线追踪最小范围0.2m （调大能更好的减少近处噪声，但近处障碍物清除能力下降；调小能够更精确的近处障碍物处理，增加计算开销）
+        #   obstacle_max_range: 5.0             # 障碍物检测最大范围2.5m(距离机器人)
+        #   obstacle_min_range: 0.01            # 障碍物检测最小范围0.05m(距离机器人)
+        #    # 增加消息过滤器参数，解决时间戳问题
+        #   # observation_persistence: 0.0        # 保持为0，实时更新
+        #   # expected_update_rate: 0.0           # 0表示不检查更新率
+        #   # transform_tolerance: 1.0            # 增加变换容差到1.0秒
 
       always_send_full_costmap: True
   local_costmap_client:
@@ -499,9 +511,9 @@ global_costmap:
         mark_threshold: 1
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        observation_sources: pointcloud      # **使用mid-360数据/livox/lidar/pointcloud进行避障**
-        pointcloud:
-          topic: /livox/lidar/pointcloud     # mid-360点云数据topic
+        observation_sources: pointcloud_1  pointcloud_2    # **使用mid-360数据/livox/lidar/pointcloud进行避障**
+        pointcloud_1:
+          topic: /livox/lidar_192_168_1_111/pointcloud     # mid-360点云数据topic
           max_obstacle_height: 1.5          
           min_obstacle_height: 0.32
           clearing: True
@@ -512,20 +524,32 @@ global_costmap:
           obstacle_max_range: 3.0
           obstacle_min_range: 0.01
           observation_persistence: 0.0     #障碍物持久性，0.0：实时性最好，但对传感器噪声更敏感；调大对短暂障碍物更鲁棒，减少障碍物闪烁，缺点是致已移动障碍物的残留
-        scan:
-          topic: /livox/lidar/scan         # mid-360点云数据按照限定的视场角转换成laserscan topic
-          max_obstacle_height: 1.0
+        pointcloud_2:
+          topic: /livox/lidar_192_168_1_140/pointcloud     # mid-360点云数据topic
+          max_obstacle_height: 1.5          
+          min_obstacle_height: 0.32
           clearing: True
           marking: True
-          data_type: "LaserScan"
+          data_type: "PointCloud2"
           raytrace_max_range: 10.0
           raytrace_min_range: 0.1
           obstacle_max_range: 3.0
           obstacle_min_range: 0.01
-          # 增加消息过滤器参数，解决时间戳问题
-          # observation_persistence: 0.0      #障碍物持久性，0.0：实时性最好，但对传感器噪声更敏感；调大对短暂障碍物更鲁棒，减少障碍物闪烁，缺点是致已移动障碍物的残留
-          # expected_update_rate: 0.0         # 0表示不检查更新率
-          # transform_tolerance: 1.0          # 增加变换容差到1.0秒
+          observation_persistence: 0.0     #障碍物持久性，0.0：实时性最好，但对传感器噪声更敏感；调大对短暂障碍物更鲁棒，减少障碍物闪烁，缺点是致已移动障碍物的残留
+        # scan:
+        #   topic: /livox/lidar/scan         # mid-360点云数据按照限定的视场角转换成laserscan topic
+        #   max_obstacle_height: 1.0
+        #   clearing: True
+        #   marking: True
+        #   data_type: "LaserScan"
+        #   raytrace_max_range: 10.0
+        #   raytrace_min_range: 0.1
+        #   obstacle_max_range: 3.0
+        #   obstacle_min_range: 0.01
+        #   # 增加消息过滤器参数，解决时间戳问题
+        #   # observation_persistence: 0.0      #障碍物持久性，0.0：实时性最好，但对传感器噪声更敏感；调大对短暂障碍物更鲁棒，减少障碍物闪烁，缺点是致已移动障碍物的残留
+        #   # expected_update_rate: 0.0         # 0表示不检查更新率
+        #   # transform_tolerance: 1.0          # 增加变换容差到1.0秒
 
 
       static_layer:
