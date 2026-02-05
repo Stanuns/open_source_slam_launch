@@ -155,8 +155,8 @@ controller_server:
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"  # 简单进度检查器
       #以下两个是进度检查器的关键参数，用于检测机器人是否卡住：
-      required_movement_radius: 0.4 #0.5                
-      movement_time_allowance: 5.0                     
+      required_movement_radius: 0.25 #0.5                
+      movement_time_allowance: 8.0                     
     general_goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
       stateful: true          # 必须
@@ -170,16 +170,16 @@ controller_server:
       vx_std: 0.2
       vy_std: 0.2
       wz_std: 0.4
-      vx_max: 0.5
-      vx_min: -0.5
-      vy_max: 0.5
-      vy_min: -0.5
-      wz_max: 1.0
-      wz_min: -1.0
-      ax_max: 1.5
-      ax_min: -1.5
-      ay_max: 1.5
-      ay_min: -1.5
+      vx_max: 0.3
+      vx_min: -0.3
+      vy_max: 0.2
+      vy_min: -0.2
+      wz_max: 0.6
+      wz_min: -0.6
+      ax_max: 1.0
+      ax_min: -1.0
+      ay_max: 1.0
+      ay_min: -1.0
       az_max: 2.0
       # min_speed_xy: 0.0
       # min_speed_theta: 0.0
@@ -225,7 +225,7 @@ controller_server:
         enabled: true
         cost_power: 1
         cost_weight: 15.0   # 权重大，强烈惩罚
-        deadband_velocities: [0.05, 0.05, 0.05]
+        deadband_velocities: [0.03, 0.03, 0.03]
       ObstaclesCritic:
         enabled: true
         cost_power: 1
@@ -419,7 +419,7 @@ local_costmap:
     ros__parameters:
       update_frequency: 15.0           # 更新频率20Hz（高频更新，用于实时避障）
       publish_frequency: 5.0
-      global_frame: camera_init #odom_combined      # 全局坐标系（里程计融合坐标系）
+      global_frame: map #odom_combined      # 全局坐标系（里程计融合坐标系）
       robot_base_frame: base_footprint # 机器人基座坐标系
       use_sim_time: False
       transform_tolerance: 0.5          # 增加变换容差到1.0秒，解决时间戳问题
@@ -449,10 +449,10 @@ local_costmap:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: true
 
-        observation_sources: pointcloud_1 pointcloud_2      # **使用mid-360数据/livox/lidar/pointcloud进行避障**
+        observation_sources: pointcloud_1       # **使用mid-360数据/livox/lidar/pointcloud进行避障**
         pointcloud_1:
           topic: /livox/lidar_192_168_1_111/pointcloud     # mid-360点云数据topic
-          max_obstacle_height: 1.5           # 最大障碍物高度1.5m
+          max_obstacle_height: 0.8           # 最大障碍物高度1.5m
           min_obstacle_height: 0.32          # 最小障碍物高度0.12m（过滤地面，由于点云误差设置成0.12m）
           clearing: True                     # 启用障碍物清除, 设置True：当传感器检测到之前标记为障碍物的区域现在为空闲时，清除该区域的障碍物标记。
           marking: True                      # 启用障碍物标记，设置True：当传感器检测到障碍物时，在代价地图中标记相应区域。
@@ -464,7 +464,7 @@ local_costmap:
           observation_persistence: 0.0        # 保持为0，实时更新
         pointcloud_2:
           topic: /livox/lidar_192_168_1_140/pointcloud     # mid-360点云数据topic
-          max_obstacle_height: 1.5           # 最大障碍物高度1.5m
+          max_obstacle_height: 0.8           # 最大障碍物高度1.5m
           min_obstacle_height: 0.35          # 最小障碍物高度0.12m（过滤地面，由于点云误差设置成0.12m）
           clearing: False                     # 启用障碍物清除, 设置True：当传感器检测到之前标记为障碍物的区域现在为空闲时，清除该区域的障碍物标记。
           marking: True                      # 启用障碍物标记，设置True：当传感器检测到障碍物时，在代价地图中标记相应区域。
@@ -515,10 +515,10 @@ global_costmap:
         mark_threshold: 1
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        observation_sources: pointcloud_1 pointcloud_2     # **使用mid-360数据/livox/lidar/pointcloud进行避障**
+        observation_sources: pointcloud_1      # **使用mid-360数据/livox/lidar/pointcloud进行避障**
         pointcloud_1:
           topic: /livox/lidar_192_168_1_111/pointcloud     # mid-360点云数据topic
-          max_obstacle_height: 1.5          
+          max_obstacle_height: 0.8          
           min_obstacle_height: 0.32
           clearing: False
           marking: True
@@ -530,7 +530,7 @@ global_costmap:
           observation_persistence: 0.0     #障碍物持久性，0.0：实时性最好，但对传感器噪声更敏感；调大对短暂障碍物更鲁棒，减少障碍物闪烁，缺点是致已移动障碍物的残留
         pointcloud_2:
           topic: /livox/lidar_192_168_1_140/pointcloud     # mid-360点云数据topic
-          max_obstacle_height: 1.5          
+          max_obstacle_height: 0.8          
           min_obstacle_height: 0.35
           clearing: False
           marking: True
