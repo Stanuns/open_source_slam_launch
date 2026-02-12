@@ -449,7 +449,7 @@ local_costmap:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: true
 
-        observation_sources: pointcloud_1       # **使用mid-360数据/livox/lidar/pointcloud进行避障**
+        observation_sources: pointcloud_1  pointcloud_2     # **使用mid-360数据/livox/lidar/pointcloud进行避障**
         pointcloud_1:
           topic: /livox/lidar_192_168_1_111/pointcloud     # mid-360点云数据topic
           max_obstacle_height: 1.5           # 最大障碍物高度1.5m
@@ -466,7 +466,7 @@ local_costmap:
           topic: /livox/lidar_192_168_1_140/pointcloud     # mid-360点云数据topic
           max_obstacle_height: 1.5           # 最大障碍物高度1.5m
           min_obstacle_height: 0.35          # 最小障碍物高度0.12m（过滤地面，由于点云误差设置成0.12m）
-          clearing: False                     # 启用障碍物清除, 设置True：当传感器检测到之前标记为障碍物的区域现在为空闲时，清除该区域的障碍物标记。
+          clearing: True                     # 启用障碍物清除, 设置True：当传感器检测到之前标记为障碍物的区域现在为空闲时，清除该区域的障碍物标记。
           marking: True                      # 启用障碍物标记，设置True：当传感器检测到障碍物时，在代价地图中标记相应区域。
           data_type: "PointCloud2"           # 数据类型
           raytrace_max_range: 5.0            # 光线追踪最大范围4m  （调大能更好的清除远处障碍物，增加计算开销；调小减少计算量，减小远处传感器噪声影响）
