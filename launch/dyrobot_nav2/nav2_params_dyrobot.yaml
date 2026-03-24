@@ -515,7 +515,7 @@ global_costmap:
         mark_threshold: 1
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        observation_sources: pointcloud_1      # **使用mid-360数据/livox/lidar/pointcloud进行避障**
+        observation_sources:  pointcloud_1  pointcloud_2    # **使用mid-360数据/livox/lidar/pointcloud进行避障**
         pointcloud_1:
           topic: /livox/lidar_192_168_1_111/pointcloud     # mid-360点云数据topic
           max_obstacle_height: 1.5          

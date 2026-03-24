@@ -176,3 +176,45 @@ sudo apt install ros-humble-nav2-lifecycle-manager
         ros__parameters:
           use_sim_time: False
   ```
+
+
+  # ***四、ros2中，fast_lio2与Navigation2的使用***
+  ## 启动底盘(松灵ranger mini3.0)
+  ```
+  sudo ip link set can0 up type can bitrate 500000
+  ros2 launch ranger_bringup ranger_mini_v3.launch.py
+  ros2 launch robot_description dy_urdf.launch.py
+  ```
+  ## 启动激光雷达(mid-360)
+  ```
+  ros2 launch livox_ros_driver2 multi_msg_MID360_launch.py
+  ```
+  ## 建图
+  ### 开启 fast_lio
+  ```
+  ros2 launch fast_lio mapping_without_rviz.launch.py config_file:=avia.yaml
+
+  #保存地图 ctrl-c, 保存路径在FAST_LIO/PCD/scans.pcd
+  ```
+  ### 开启cotomap（绘制二维格栅地图）
+  ```
+  ros2 launch octomap_server octomap_mapping.launch.xml
+  ```
+
+  ### 保存二维地图
+  ```
+  cd ~/ksdy_ws/ros2_ws/src/map_server_extension/scripts
+  python3 save_map.py  #文件保存在同目录下
+  ```
+
+  ### pcd地图稀疏化过滤(降采样)
+  ```
+  ros2 run pcd_process pcd_downsample #需修改pcd_downsample.cpp中文件路径
+  ```
+
+  ## 定位导航
+  ```
+  ros2 launch fast_lio_localization localization.launch.py pcd_map_topic:=cloud_pcd map:=/home/firefly/ksdy_ws/FAST_LIO_WS/src/FAST_LIO/PCD/scans_0.1.pcd
+
+  ros2 launch open_source_slam_launch dyrobot_nav2.launch.py
+  ```
