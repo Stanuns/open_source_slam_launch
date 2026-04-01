@@ -7,7 +7,9 @@ sudo apt install ros-humble-cartographer
 sudo apt install ros-humble-cartographer-ros
 sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup
 ```
+
 ## 1.2 安装依赖
+
 ```bashrc
 sudo apt update
 sudo apt install ros-humble-joint-state-publisher
@@ -21,45 +23,52 @@ sudo apt install ros-humble-nav2-lifecycle-manager
 ```
 
 ## 1.3 DEBUG阶段保存地图方法
+
   [refer 1](https://github.com/ros-navigation/navigation2/tree/humble/nav2_map_server)
   [refer 2](https://roboticsbackend.com/ros2-nav2-tutorial/)
 
-  ```bashrc
+```bashrc
   ros2 run nav2_map_server map_saver_cli -f my_map_name
-  ```
+```
 
 #### issue 1: if local_costmap/costmap of rviz cannot show, you need check the use_sim_time.
 
 #### issue2: Now, you should just see the map on the screen, but no robot. You’ll also see some kinds of error logs in the terminal. This is because Nav2 doesn’t know where your robot is, and you need to **provide the first 2D pose estimate**.
 
 # ***二、建图与导航算法配置文件***
+
 ## 2.1 建图算法配置文件(单独建图与自动导航探索建图共用同一个配置文件)
+
   该包config目录下的[luxsharerobot_cartographer_mapping.lua](./config/luxsharerobot_cartographer_mapping.lua)， 配置文件参数解释见该文件中的注释
 
 ## 2.2 导航避障算法配置文件
-  - 2.2.1 单独导航的配置文件在该包目录launch/luxsharerobot_nav2下
-    [nav2_params_luxsharerobot.yaml](./launch/luxsharerobot_nav2/nav2_params_luxsharerobot.yaml), 配置文件参数解释见该文件中的注释
 
-  - 2.2.2 自动导航探索建图的配置文件在该包目录launch/luxsharerobot_nav2_aem下
-    [nav2_auto_explore_mapping_luxsharerobot.yaml](./launch/luxsharerobot_nav2_aem/nav2_auto_explore_mapping_luxsharerobot.yaml)
-
+- 2.2.1 单独导航的配置文件在该包目录launch/luxsharerobot_nav2下
+  [nav2_params_luxsharerobot.yaml](./launch/luxsharerobot_nav2/nav2_params_luxsharerobot.yaml), 配置文件参数解释见该文件中的注释
+- 2.2.2 自动导航探索建图的配置文件在该包目录launch/luxsharerobot_nav2_aem下
+  [nav2_auto_explore_mapping_luxsharerobot.yaml](./launch/luxsharerobot_nav2_aem/nav2_auto_explore_mapping_luxsharerobot.yaml)
 
 # ***三、配置RGBD相机进行导航避障***
+
 ## 3.1 首先确保RGBD相机正确启动，并发出点云数据到topic /pointcloud
 
 ## 3.2 配置RGBD相机与机器人的tf转换关系
+
   配置文件路径：robot_description包中diff_robot.urdf.xacro文件这一部分：
-  ```bashrc
+
+```bashrc
       <joint name="base_link_to_camera_link" type="fixed">
         <parent link="base_link" />
         <child link="camera_link" />
         <origin xyz="0.06 0.00 0.356" rpy="1.2391 3.14159 1.5707"/> <!-- RGBD相机下俯19° -->
       </joint>
-  ```
+```
 
 ## 3.3 在nav2_params_luxsharerobot.yaml文件中加载点云数据topic /pointcloud
+
   在local_costmap及global_costmap中加载
-  ```bashrc
+
+```bashrc
     local_costmap:
       local_costmap:
         ros__parameters:
@@ -150,7 +159,7 @@ sudo apt install ros-humble-nav2-lifecycle-manager
               observation_persistence: 0.0      #障碍物持久性，0.0：实时性最好，但对传感器噪声更敏感；调大对短暂障碍物更鲁棒，减少障碍物闪烁，缺点是致已移动障碍物的残留
             pointcloud:
               topic: /pointcloud                # RGBD相机点云数据topic
-              max_obstacle_height: 1.5          
+              max_obstacle_height: 1.5        
               min_obstacle_height: 0.12
               clearing: True
               marking: True
@@ -162,7 +171,7 @@ sudo apt install ros-humble-nav2-lifecycle-manager
               observation_persistence: 0.0     #障碍物持久性，0.0：实时性最好，但对传感器噪声更敏感；调大对短暂障碍物更鲁棒，减少障碍物闪烁，缺点是致已移动障碍物的残留
           static_layer:
             plugin: "nav2_costmap_2d::StaticLayer"      # 静态地图图层
-            map_subscribe_transient_local: True         
+            map_subscribe_transient_local: True       
           inflation_layer:
             plugin: "nav2_costmap_2d::InflationLayer"
             cost_scaling_factor: 10.0 #5.0              # 代价缩放因子
@@ -175,46 +184,57 @@ sudo apt install ros-humble-nav2-lifecycle-manager
       global_costmap_rclcpp_node:
         ros__parameters:
           use_sim_time: False
-  ```
+```
 
+# ***四、ros2中，fast_lio2与Navigation2的使用***
 
-  # ***四、ros2中，fast_lio2与Navigation2的使用***
-  ## 启动底盘(松灵ranger mini3.0)
-  ```
+## 启动底盘(松灵ranger mini3.0)
+
+```
   sudo ip link set can0 up type can bitrate 500000
   ros2 launch ranger_bringup ranger_mini_v3.launch.py
   ros2 launch robot_description dy_urdf.launch.py
-  ```
-  ## 启动激光雷达(mid-360)
-  ```
+```
+
+## 启动激光雷达(mid-360)
+
+```
   ros2 launch livox_ros_driver2 multi_msg_MID360_launch.py
-  ```
-  ## 建图
-  ### 开启 fast_lio
-  ```
+```
+
+## 建图
+
+### 开启 fast_lio
+
+```
   ros2 launch fast_lio mapping_without_rviz.launch.py config_file:=avia.yaml
 
   #保存地图 ctrl-c, 保存路径在FAST_LIO/PCD/scans.pcd
-  ```
-  ### 开启cotomap（绘制二维格栅地图）
-  ```
-  ros2 launch octomap_server octomap_mapping.launch.xml
-  ```
+```
 
-  ### 保存二维地图
-  ```
+### 开启cotomap（绘制二维格栅地图）
+
+```
+  ros2 launch octomap_server octomap_mapping.launch.xml
+```
+
+### 保存二维地图
+
+```
   cd ~/ksdy_ws/ros2_ws/src/map_server_extension/scripts
   python3 save_map.py  #文件保存在同目录下
-  ```
+```
 
-  ### pcd地图稀疏化过滤(降采样)
-  ```
+### pcd地图稀疏化过滤(降采样)
+
+```
   ros2 run pcd_process pcd_downsample #需修改pcd_downsample.cpp中文件路径
-  ```
+```
 
-  ## 定位导航
-  ```
-  ros2 launch fast_lio_localization localization.launch.py pcd_map_topic:=cloud_pcd map:=/home/firefly/ksdy_ws/FAST_LIO_WS/src/FAST_LIO/PCD/scans_0.1.pcd
+## 定位导航
+
+```
+  ros2 launch fast_lio_localization localization.launch.py pcd_map_topic:=cloud_pcd map:=/home/daya/ksdy_ws/FAST_LIO_WS/src/FAST_LIO/PCD/scans_0.1.pcd
 
   ros2 launch open_source_slam_launch dyrobot_nav2.launch.py
-  ```
+```
