@@ -1,3 +1,5 @@
+<!--
+
 # ***一、ros2中，Cartographer与Navigation2的安装及使用***
 
 ## 1.1 安装 cartographer、navigation2
@@ -47,6 +49,8 @@ sudo apt install ros-humble-nav2-lifecycle-manager
   [nav2_params_luxsharerobot.yaml](./launch/luxsharerobot_nav2/nav2_params_luxsharerobot.yaml), 配置文件参数解释见该文件中的注释
 - 2.2.2 自动导航探索建图的配置文件在该包目录launch/luxsharerobot_nav2_aem下
   [nav2_auto_explore_mapping_luxsharerobot.yaml](./launch/luxsharerobot_nav2_aem/nav2_auto_explore_mapping_luxsharerobot.yaml)
+
+-->
 
 # ***三、配置RGBD相机进行导航避障***
 
@@ -188,7 +192,7 @@ sudo apt install ros-humble-nav2-lifecycle-manager
 
 # ***四、ros2中，fast_lio2与Navigation2的使用***
 
-## 启动底盘(松灵ranger mini3.0)
+## 4.1 启动底盘(松灵ranger mini3.0)
 
 ```
   sudo ip link set can0 up type can bitrate 500000
@@ -196,13 +200,13 @@ sudo apt install ros-humble-nav2-lifecycle-manager
   ros2 launch robot_description dy_urdf.launch.py
 ```
 
-## 启动激光雷达(mid-360)
+## 4.2 启动激光雷达(mid-360)
 
 ```
   ros2 launch livox_ros_driver2 multi_msg_MID360_launch.py
 ```
 
-## 建图
+## 4.3 建图
 
 ### 开启 fast_lio
 
@@ -231,10 +235,28 @@ sudo apt install ros-humble-nav2-lifecycle-manager
   ros2 run pcd_process pcd_downsample #需修改pcd_downsample.cpp中文件路径
 ```
 
-## 定位导航
+## 4.4 定位导航
 
 ```
   ros2 launch fast_lio_localization localization.launch.py pcd_map_topic:=cloud_pcd map:=/home/daya/ksdy_ws/FAST_LIO_WS/src/FAST_LIO/PCD/scans_0.1.pcd
 
   ros2 launch open_source_slam_launch dyrobot_nav2.launch.py
+```
+
+## 4.5 开启Apriltag定位微调
+
+### 4.5.1 开启realsense D435i
+
+```
+ros2 launch realsense2_camera rs_launch.py depth_module.depth_profile:=480x270x6 pointcloud.enable:=true
+```
+### 4.5.2 开启align_server(action server)
+```
+ros2 launch apriltag_ros camera_36h11_dev.launch.yml
+ros2 run camera_tag_align align_server
+```
+
+### align_server测试(action client)
+```
+ros2 run camera_tag_align align_client
 ```
